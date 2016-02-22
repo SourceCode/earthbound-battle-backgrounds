@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Earthbound Battle Backgrounds</title>
+		<style>
+			* {
+				padding: 0;
+				margin: 0;
+			}
+			html, body {
+				width: 100%;
+				height: 100%;
+			}
+			canvas {
+				width: 100%;
+				height: 100%;
+				image-rendering: optimizeSpeed;
+				image-rendering: -moz-crisp-edges;
+				image-rendering: -webkit-optimize-contrast;
+				image-rendering: -o-crisp-edges;
+				image-rendering: pixelated;
+				-ms-interpolation-mode: nearest-neighbor;
+				display: block;
+			}
+		</style>
+		<script src="dist/packages/system.js"></script>
+		<script src="dist/browser-polyfill.min.js"></script>
+		<script src="dist/config.js"></script>
+		<script>System.import("readBackgroundData")</script>
+	</head>
+	<body>
+		<canvas></canvas>
+	</body>
+</html>
