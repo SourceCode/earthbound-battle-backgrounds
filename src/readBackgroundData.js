@@ -26,10 +26,6 @@ let setupEngine = ({
 	aspectRatio = 0
 } = {}) => {
 	let [layer1, layer2] = layers;
-	let [fps, alpha] = [30, 0.5];
-	if (layer2 === 0) {
-		alpha = 1;
-	}
 	let bgLayer1 = getLayer(layer1);
 	let bgLayer2 = getLayer(layer2);
 	engine = new Engine([bgLayer1, bgLayer2]);
@@ -48,7 +44,22 @@ function getLayer(index) {
 	return ROM.layerCache[index];
 }
 function updateLayer(index) {
-	engine.layers[index] = getLayer(state.layers[index]);
+	let layer = getLayer(state.layers[index]);
+	engine.layers[index] = layer;
+	let layerCount = state.layers.length;
+	let emptyLayers = state.layers.map((x, i) => x === 0 ? i : null).filter(x => x !== null);
+	let averageAlpha = 1 / (layerCount - emptyLayers.length) || 0;
+	let alphas = [];
+	for (let i = 0; i < engine.layers.length; ++i) {
+		let layer = engine.layers[i];
+		if (layer.entry === 0) {
+			alphas[i] = 0;
+		}
+		else {
+			alphas[i] = averageAlpha;
+		}
+	}
+	engine.alpha = alphas;
 }
 function selectNext(secondLayer) {
 	if (!secondLayer) {
@@ -73,7 +84,7 @@ function selectNext(secondLayer) {
 }
 function selectPrevious(secondLayer) {
 	if (!secondLayer) {
-		if (state.layers[0] > 1) {
+		if (state.layers[0] > 0) {
 			--state.layers[0];
 			updateLayer(0);
 		}
@@ -82,7 +93,7 @@ function selectPrevious(secondLayer) {
 		}
 	}
 	else {
-		if (state.layers[0] > 1) {
+		if (state.layers[1] > 0) {
 			--state.layers[1];
 			updateLayer(1);
 		}
