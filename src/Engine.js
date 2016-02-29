@@ -4,7 +4,7 @@ export default class Engine {
 		fps = 30,
 		aspectRatio = 0,
 		frameSkip = 1,
-		alpha = 0.5
+		alpha = [0.5, 0.5]
 	} = {}) {
 		this.layers = layers;
 		this.fps = fps;
@@ -21,6 +21,14 @@ export default class Engine {
 		let bitmap;
 		let canvas = document.querySelector("canvas");
 		let context = canvas.getContext("2d");
+		if (this.layers[0].entry && !this.layers[1].entry) {
+			this.alpha[0] = 1;
+			this.alpha[1] = 0;
+		}
+		if (!this.layers[0].entry && this.layers[1].entry) {
+			this.alpha[0] = 0;
+			this.alpha[1] = 1;
+		}
 		context.imageSmoothingEnabled = false;
 		/* SNES resolution */
 		canvas.width = 256;
@@ -32,8 +40,8 @@ export default class Engine {
 			elapsed = now - then;
 			if (elapsed > fpsInterval) {
 				then = now - (elapsed % fpsInterval);
-				bitmap = this.layers[0].overlayFrame(image.data, this.aspectRatio, tick, this.alpha, true);
-				bitmap = this.layers[1].overlayFrame(bitmap, this.aspectRatio, tick, 0.5, false);
+				bitmap = this.layers[0].overlayFrame(image.data, this.aspectRatio, tick, this.alpha[0], true);
+				bitmap = this.layers[1].overlayFrame(bitmap, this.aspectRatio, tick, this.alpha[1], false);
 				tick += this.frameSkip;
 				image.data.set(bitmap);
 				context.putImageData(image, 0, 0);

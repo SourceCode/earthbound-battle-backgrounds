@@ -29,19 +29,19 @@ export default class BackgroundLayer {
 	*            Whether or not to clear the destination bitmap before
 	*            rendering
 	*/
-	overlayFrame(dst, letterbox, ticks, alpha, erase) {
-		if (this.paletteCycle !== null ) {
-			this.paletteCycle.cycle;
+	overlayFrame(bitmap, letterbox, ticks, alpha, erase) {
+		if (this.paletteCycle !== null) {
+			this.paletteCycle.cycle();
 			this.graphics.draw(this.pixels, this.paletteCycle);
 		}
-		return this.distorter.overlayFrame(dst, letterbox, ticks, alpha, erase);
+		return this.distorter.overlayFrame(bitmap, letterbox, ticks, alpha, erase);
 	}
 	loadGraphics(n) {
 		this.graphics = ROM.getObject(BackgroundGraphics, n);
 	}
 	loadPalette(bg) {
 		this.paletteCycle = new PaletteCycle(ROM.getObject(BackgroundPalette, bg.paletteIndex), bg.paletteCycleType, bg.paletteCycle1Start, bg.paletteCycle1End, bg.paletteCycle2Start, bg.paletteCycle2End, bg.paletteCycleSpeed);
-	};
+	}
 	loadEffect(n) {
 		let effect = ROM.getObject(DistortionEffect, n);
 		this.distorter.effect = effect;
