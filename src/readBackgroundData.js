@@ -1,7 +1,7 @@
+import "babel-polyfill";
 import ROM from "./rom/ROM";
 import BackgroundLayer from "./rom/BackgroundLayer";
 import Engine from "./Engine";
-import polyfill from "babel-polyfill";
 let state = {
 	layers: [153, 298]
 };
