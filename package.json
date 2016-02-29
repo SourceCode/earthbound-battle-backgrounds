@@ -20,10 +20,11 @@
   },
   "jspm": {
     "directories": {
-      "baseURL": "dist",
-      "packages": "dist/packages"
+      "packages": "packages"
     },
-    "dependencies": {},
+    "dependencies": {
+      "babel-polyfill": "npm:babel-polyfill@^6.5.0"
+    },
     "devDependencies": {
       "babel": "npm:babel-core@^5.8.24",
       "babel-runtime": "npm:babel-runtime@^5.8.24",
