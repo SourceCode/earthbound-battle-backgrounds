@@ -9,8 +9,9 @@ export default class Block {
 		this.writable = writable;
 	}
 	write(value) {
-		if (this.pointer + 2 >= this.address + this.size)
+		if (this.pointer + 2 >= this.address + this.size) {
 			throw new Error("Block write overflow");
+		}
 		this.blockData[this.pointer++] = value;
 		this.blockData[this.pointer++] = (value >> 8);
 	}
@@ -22,11 +23,12 @@ export default class Block {
 	* @return An array containing the decompressed data.
 	*/
 	decompress() {
-		var size = ROM.getCompressedSize(this.pointer, this.blockData);
-		if (size < 1)
+		let size = ROM.getCompressedSize(this.pointer, this.blockData);
+		if (size < 1) {
 			throw new Error(`Invalid compressed data: ${size}`);
-		var blockOutput = new Int16Array(size);
-		var read = 0;
+		}
+		let blockOutput = new Int16Array(size);
+		let read = 0;
 		blockOutput = ROM.decompress(this.pointer, this.blockData, blockOutput, read);
 		if (blockOutput === null) {
 			throw new Error("Computed and actual decompressed sizes do not match.");
@@ -47,7 +49,7 @@ export default class Block {
 		return this.blockData[this.pointer++] + (this.blockData[this.pointer++] << 8) + (this.blockData[this.pointer++] << 16) + (this.blockData[this.pointer++] << 24);
 	}
 	readDoubleShort() {
-		var fakeShort = new Int16Array(1);
+		let fakeShort = new Int16Array(1);
 		fakeShort[0] = this.blockData[this.pointer++] + (this.blockData[this.pointer++] << 8);
 		return fakeShort;
 	}

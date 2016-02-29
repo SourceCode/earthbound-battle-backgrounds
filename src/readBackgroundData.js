@@ -31,7 +31,6 @@ let setupEngine = ({
 		alpha = 1;
 	}
 	let bgLayer1 = getLayer(layer1);
-	console.log(bgLayer1);
 	let bgLayer2 = getLayer(layer2);
 	engine = new Engine([bgLayer1, bgLayer2]);
 	engine.animate();

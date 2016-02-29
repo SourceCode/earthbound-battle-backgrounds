@@ -6,9 +6,9 @@ export default class BackgroundPalette {
 		this.read(index);
 	}
 	read(index) {
-		var ptr = ROM.readBlock(0xADCD9 + index * 4);
-		var address = snesToHex(ptr.readInt());
-		var data = ROM.readBlock(address);
+		let pointer = ROM.readBlock(0xADCD9 + index * 4);
+		let address = snesToHex(pointer.readInt());
+		let data = ROM.readBlock(address);
 		this.address = address;
 		this.readPalette(data, this.bitsPerPixel, 1);
 	}
@@ -43,13 +43,13 @@ export default class BackgroundPalette {
 		if (count < 1)
 			throw new Error("Palette error: Must specify positive number of subpalettes.");
 		this.colors = new Array(count);
-		for (var pal = 0; pal < count; pal++) {
+		for (let pal = 0; pal < count; pal++) {
 			this.colors[pal] = new Array(Math.pow(2, this.bitsPerPixel));
-			for (var i = 0; i < Math.pow(2, this.bitsPerPixel); i++) {
-				var clr16 = block.readDoubleShort()[0];
-				var b = (((clr16 >> 10) & 31) * 8);
-				var g = (((clr16 >> 5) & 31) * 8);
-				var r = ((clr16 & 31) * 8);
+			for (let i = 0; i < Math.pow(2, this.bitsPerPixel); i++) {
+				let clr16 = block.readDoubleShort()[0];
+				let b = (((clr16 >> 10) & 31) * 8);
+				let g = (((clr16 >> 5) & 31) * 8);
+				let r = ((clr16 & 31) * 8);
 				// convert RGB to color int
 				// this code is straight out of Android: http://git.io/F1lZtw
 				this.colors[pal][i] = (0xFF << 24) | (r << 16) | (g << 8) | b;
