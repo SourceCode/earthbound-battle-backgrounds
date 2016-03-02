@@ -2,33 +2,23 @@ import { default as ROM, snesToHex } from "./ROM";
 import ROMGraphics from "./ROMGraphics";
 export default class BackgroundGraphics {
 	constructor(index, bitsPerPixel) {
-		this.arrROMGraphics = null
+		this.arrayROMGraphics = null
 		this.romGraphics = new ROMGraphics(bitsPerPixel);
 		this.read(index);
 	}
 	read(index) {
 		/* Graphics pointer table entry */
-		let gfxPtrBlock = ROM.readBlock(0xAD9A1 + index * 4);
+		let graphicsPointerBlock = ROM.readBlock(0xAD9A1 + index * 4);
 		/* Read graphics */
-		this.romGraphics.loadGraphics(ROM.readBlock(snesToHex(gfxPtrBlock.readInt())));
+		this.romGraphics.loadGraphics(ROM.readBlock(snesToHex(graphicsPointerBlock.readInt())));
 		/* Arrangement pointer table entry */
-		let arrPtrBlock = ROM.readBlock(0xADB3D + index * 4);
-		let arrPtr = snesToHex(arrPtrBlock.readInt());
+		let arrayPointerBlock = ROM.readBlock(0xADB3D + index * 4);
+		let arrayPointer = snesToHex(arrayPointerBlock.readInt());
 		/* Read and decompress arrangement */
-		let arrBlock = ROM.readBlock(arrPtr);
-		this.arrROMGraphics = arrBlock.decompress();
+		let arrayBlock = ROM.readBlock(arrayPointer);
+		this.arrayROMGraphics = arrayBlock.decompress();
 	}
-	draw(bmp, pal) {
-		return this.romGraphics.draw(bmp, pal, this.arrROMGraphics);
-	}
-	/**
-	* Internal function - reads graphics from the specified block and builds
-	* tileset.
-	*
-	* @param block
-	* The block to read graphics data from
-	*/
-	loadGraphics(block) {
-		this.romGraphics.loadGraphics(block);
+	draw(bitmap, palette) {
+		return this.romGraphics.draw(bitmap, palette, this.arrayROMGraphics);
 	}
 };

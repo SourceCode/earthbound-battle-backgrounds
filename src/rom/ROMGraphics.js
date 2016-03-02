@@ -2,9 +2,7 @@ export default class ROMGraphics {
 	constructor(bitsPerPixel) {
 		this.bitsPerPixel = bitsPerPixel;
 	}
-	/**
-	* Internal function - builds the tile array from the gfx buffer.
-	*/
+	/* Internal function - builds the tile array from the gfx buffer. */
 	buildTiles() {
 		let n = this.gfxROMGraphics.length / (8 * this.bitsPerPixel);
 		this.tiles = [];
@@ -27,35 +25,35 @@ export default class ROMGraphics {
 			}
 		}
 	}
-	// JNI C code
-	draw(bmp, pal, arrROMGraphics) {
+	/* JNI C code */
+	draw(bmp, palette, arrayROMGraphics) {
 		let data = bmp;
 		let block = 0, tile = 0, subPalette = 0;
 		let n = 0, b1 = 0, b2 = 0;
 		let verticalFlip = false, horizontalFlip = false;
 		// TODO: hardcoding is bad; how do I get the stride normally?
 		let stride = 1024;
-		// for each pixel in the 256x256 grid, we need to render the image found in the .dat file
+		/* For each pixel in the 256×256 grid, we need to render the image found in the dump */
 		for (let i = 0; i < 32; ++i) {
 			for (let j = 0; j < 32; ++j) {
 				n = j * 32 + i;
-				b1 = arrROMGraphics[n * 2];
-				b2 = arrROMGraphics[n * 2 + 1] << 8;
+				b1 = arrayROMGraphics[n * 2];
+				b2 = arrayROMGraphics[n * 2 + 1] << 8;
 				block = b1 + b2;
 				tile = block & 0x3FF;
 				verticalFlip = (block & 0x8000) !== 0;
 				horizontalFlip = (block & 0x4000) !== 0;
 				subPalette = (block >> 10) & 7;
-				this.drawTile(data, stride, i * 8, j * 8, pal, tile, subPalette, verticalFlip, horizontalFlip);
+				this.drawTile(data, stride, i * 8, j * 8, palette, tile, subPalette, verticalFlip, horizontalFlip);
 			}
 		}
 		return data;
 	}
-	drawTile(pixels, stride, x, y, pal, tile, subPalette, verticalFlip, horizontalFlip) {
+	drawTile(pixels, stride, x, y, palette, tile, subPalette, verticalFlip, horizontalFlip) {
 		let i, j, px, py;
 		for (i = 0; i < 8; ++i) {
 			for (j = 0; j < 8; ++j) {
-				let rgbArray = this.getRGBPal(pal, tile, subPalette, i, j);
+				let rgbArray = this.getRGBPalette(palette, tile, subPalette, i, j);
 				if (horizontalFlip) {
 					px = x + 7 - i;
 				}
@@ -76,18 +74,18 @@ export default class ROMGraphics {
 		}
 		return pixels;
 	}
-	getRGBPal(pal, tile, subPalette, i, j) {
+	getRGBPalette(palette, tile, subPalette, i, j) {
 		let pos = this.tiles[tile][i][j];
-		let colorChunk = pal.getColors(subPalette)[pos];
+		let colorChunk = palette.getColors(subPalette)[pos];
 		return colorChunk;
 	}
 	/**
-	 * Internal function - reads graphics from the specified block and builds
-	 * tileset.
-	 *
-	 * @param block
-	 * The block to read graphics data from
-	 */
+	* Internal function - reads graphics from the specified block and builds
+	* tileset.
+	*
+	* @param block
+	* The block to read graphics data from
+	*/
 	loadGraphics(block) {
 		this.gfxROMGraphics = new Int16Array();
 		this.gfxROMGraphics = block.decompress();

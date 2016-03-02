@@ -11,11 +11,12 @@ export default class DistortionEffect {
 		this.data = new Uint8Array(17);
 		this.read(index);
 	}
-	static handler() {
-		for (let i = 0; i < 135; ++i) {
-			ROM.add(new DistortionEffect(i));
-		}
-	}
+	/* Is not caching distortion effects doing any harm? */
+// 	static handler() {
+// 		for (let i = 0; i < 135; ++i) {
+// 			ROM.add(new DistortionEffect(i));
+// 		}
+// 	}
 	static sanitize(type) {
 		if (type !== HORIZONTAL && type !== VERTICAL) {
 			return HORIZONTAL_INTERLACED;

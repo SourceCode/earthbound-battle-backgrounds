@@ -60,7 +60,7 @@ export default class ROM {
 	constructor(stream) {
 		if (!ROM.cached) {
 			ROM.romData = stream;
-			for (let constructor of [DistortionEffect, BattleBackground, BackgroundGraphics, BackgroundPalette]) {
+			for (let constructor of [BattleBackground, BackgroundGraphics, BackgroundPalette]) {
 				let { handler } = constructor;
 				if (handler instanceof Function) {
 					handler();

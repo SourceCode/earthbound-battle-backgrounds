@@ -11,9 +11,9 @@ export default class Engine {
 		this.aspectRatio = aspectRatio;
 		this.frameSkip = frameSkip;
 		this.alpha = alpha;
+		this.tick = 0;
 	}
 	animate() {
-		let tick = 0;
 		let then = Date.now();
 		let startTime = then;
 		let elapsed;
@@ -40,9 +40,9 @@ export default class Engine {
 			elapsed = now - then;
 			if (elapsed > fpsInterval) {
 				then = now - (elapsed % fpsInterval);
-				bitmap = this.layers[0].overlayFrame(image.data, this.aspectRatio, tick, this.alpha[0], true);
-				bitmap = this.layers[1].overlayFrame(bitmap, this.aspectRatio, tick, this.alpha[1], false);
-				tick += this.frameSkip;
+				bitmap = this.layers[0].overlayFrame(image.data, this.aspectRatio, this.tick, this.alpha[0], true);
+				bitmap = this.layers[1].overlayFrame(bitmap, this.aspectRatio, this.tick, this.alpha[1], false);
+				this.tick += this.frameSkip;
 				image.data.set(bitmap);
 				context.putImageData(image, 0, 0);
 			}

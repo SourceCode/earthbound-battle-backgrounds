@@ -19,23 +19,22 @@ export default class Distorter {
 	}
 	overlayFrame(dst, letterbox, ticks, alpha, erase) {
 		let e = erase ? 1 : 0;
-		return this.computeFrame(dst, this.bitmap, this.effect.type, letterbox, ticks, alpha, e,
-			this.effect.amplitude, this.effect.amplitudeAcceleration,
-			this.effect.frequency, this.effect.frequencyAcceleration,
-			this.effect.compression, this.effect.compressionAcceleration,
-			this.effect.speed);
+		return this.computeFrame(dst, this.bitmap, this.effect.type, letterbox, ticks, alpha, e, this.effect.amplitude, this.effect.amplitudeAcceleration, this.effect.frequency, this.effect.frequencyAcceleration, this.effect.compression, this.effect.compressionAcceleration, this.effect.speed);
 	}
-	/*
-		Evaluates the distortion effect at the given destination line and
-		time value and returns the computed offset value.
-		If the distortion mode is horizontal, this offset should be interpreted
-		as the number of pixels to offset the given line's starting x position.
-		If the distortion mode is vertical, this offset should be interpreted as
-		the y-coordinate of the line from the source bitmap to draw at the given
-		y-coordinate in the destination bitmap.
-		@param y The y-coordinate of the destination line to evaluate for
-		@param t The number of ticks since beginning animation
-		@return The distortion offset for the given (y, t) coordinates
+	/**
+	* Evaluates the distortion effect at the given destination line and
+	* time value and returns the computed offset value.
+	* If the distortion mode is horizontal, this offset should be interpreted
+	* as the number of pixels to offset the given line's starting x position.
+	* If the distortion mode is vertical, this offset should be interpreted as
+	* the y-coordinate of the line from the source bitmap to draw at the given
+	* y-coordinate in the destination bitmap.
+	* @param y
+	* 	The y-coordinate of the destination line to evaluate for
+	* @param t
+	* 	The number of ticks since beginning animation
+	* @return
+	* 	The distortion offset for the given (y, t) coordinates
 	*/
 	getAppliedOffset(y, t, distortionEffect, ampl, ampl_accel, s_freq, s_freq_accel, compr, compr_accel, speed) {
 		// N.B. another discrepancy from Java--these values should be "short," and

@@ -43,8 +43,7 @@ export default class BackgroundLayer {
 		this.paletteCycle = new PaletteCycle(ROM.getObject(BackgroundPalette, bg.paletteIndex), bg.paletteCycleType, bg.paletteCycle1Start, bg.paletteCycle1End, bg.paletteCycle2Start, bg.paletteCycle2End, bg.paletteCycleSpeed);
 	}
 	loadEffect(n) {
-		let effect = ROM.getObject(DistortionEffect, n);
-		this.distorter.effect = effect;
+		this.distorter.effect = new DistortionEffect(n);
 	}
 	loadEntry(n) {
 		this.entry = n;
@@ -57,4 +56,4 @@ export default class BackgroundLayer {
 		let e2 = (animation >> 16) & 0xFF;
 		this.loadEffect(e2 || e1);
 	}
-}
+};

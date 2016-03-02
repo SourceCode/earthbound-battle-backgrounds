@@ -18,6 +18,9 @@ if (search.length) {
 		}
 	}
 }
+function getLayer(index) {
+	return new BackgroundLayer(index);
+}
 let rom;
 let engine;
 let setupEngine = ({
@@ -30,18 +33,10 @@ let setupEngine = ({
 	let bgLayer2 = getLayer(layer2);
 	engine = new Engine([bgLayer1, bgLayer2]);
 	engine.animate();
-}
+};
 let byteArray = null;
 function updateState() {
 	history.replaceState(null, null, `${location.pathname}?${state.layers.join("-")}`);
-}
-function getLayer(index) {
-	return new BackgroundLayer(index);
-	/* Caching doesn't really cut it */
-	if (!ROM.layerCache[index]) {
-		ROM.layerCache[index] = new BackgroundLayer(index);
-	}
-	return ROM.layerCache[index];
 }
 function updateLayer(index) {
 	let layer = getLayer(state.layers[index]);
@@ -60,6 +55,8 @@ function updateLayer(index) {
 		}
 	}
 	engine.alpha = alphas;
+	/* Distorters should rewind */
+	engine.tick = 0;
 }
 function selectNext(secondLayer) {
 	if (!secondLayer) {
