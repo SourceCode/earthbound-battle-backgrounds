@@ -107,24 +107,28 @@ export default class Distorter {
 					continue;
 				}
 				let dx = x;
-				if (distortionEffect === 1 || distortionEffect === 2) {
+				if (distortionEffect === HORIZONTAL || distortionEffect === HORIZONTAL_INTERLACED) {
 					dx = (x + S) % 256;
-					if (dx < 0) dx = 256 + dx;
-					if (dx > 255) dx = 256 - dx;
+					if (dx < 0) {
+						dx = 256 + dx;
+					}
+					if (dx > 255) {
+						dx = 256 - dx;
+					}
 				}
-				let spos = dx * 4 + L * srcStride;
-				// Either copy or add to the destination bitmap
-				if (erase === 1) {
+				let sPos = dx * 4 + L * srcStride;
+				/* Either copy or add to the destination bitmap */
+				if (erase) {
 					bdst[bpos + 3] = 255;
-					bdst[bpos + 2] = (alpha * bsrc[spos + 2]);
-					bdst[bpos + 1] = (alpha * bsrc[spos + 1]);
-					bdst[bpos + 0] = (alpha * bsrc[spos + 0]);
+					bdst[bpos + 2] = alpha * bsrc[sPos + 2];
+					bdst[bpos + 1] = alpha * bsrc[sPos + 1];
+					bdst[bpos + 0] = alpha * bsrc[sPos + 0];
 				}
 				else {
 					bdst[bpos + 3] = 255;
-					bdst[bpos + 2] += (alpha * bsrc[spos + 2]);
-					bdst[bpos + 1] += (alpha * bsrc[spos + 1]);
-					bdst[bpos + 0] += (alpha * bsrc[spos + 0]);
+					bdst[bpos + 2] += alpha * bsrc[sPos + 2];
+					bdst[bpos + 1] += alpha * bsrc[sPos + 1];
+					bdst[bpos + 0] += alpha * bsrc[sPos + 0];
 				}
 			}
 		}
