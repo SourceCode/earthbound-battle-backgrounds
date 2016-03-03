@@ -24,7 +24,7 @@ $ gulp
 
 # How does this port differ?
 A great portion of the code was essentially re-written. Essentially, this code…
-- …offers a 20% lower memory footprint than gjtorikian's JavaScript port when rendering.
+- …offers a 25% lower memory footprint than gjtorikian's JavaScript port when rendering.
 - …highly optimizes changing the background layers at runtime; gjtorikian's version will show a white flash when you're trying to change it. This port doesn't do that.
 - …uses [ES6](http://www.ecma-international.org/ecma-262/6.0/) or later language standards.
 - …doesn't use RequireJS, but [ES6 modules](http://www.2ality.com/2014/09/es6-modules-final.html).
