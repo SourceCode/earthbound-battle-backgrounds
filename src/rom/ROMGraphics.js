@@ -14,8 +14,7 @@ export default class ROMGraphics {
 				for (let y = 0; y < 8; ++y) {
 					let c = 0;
 					for (let bp = 0; bp < this.bitsPerPixel; ++bp) {
-						// N.B. such a slight bug! we must Math.floor this value,
-						// do to the possibility of a number like 0.5 (should equal 0)
+						// NOTE: Such a slight bug! We must Math.floor this value, due to the possibility of a number like 0.5 (which should equal 0).
 						let halfBp = Math.floor(bp / 2);
 						let gfx = this.gfxROMGraphics[o + y * 2 + (halfBp * 16 + (bp & 1))];
 						c += ((gfx & (1 << 7 - x)) >> 7 - x) << bp;
@@ -50,34 +49,29 @@ export default class ROMGraphics {
 		return data;
 	}
 	drawTile(pixels, stride, x, y, palette, tile, subPalette, verticalFlip, horizontalFlip) {
-		let i, j, px, py;
+		let i, j, px, py, pos, rgbArray, subPaletteArray = palette.getColors(subPalette);
 		for (i = 0; i < 8; ++i) {
+			if (horizontalFlip) {
+				px = x + 7 - i;
+			}
+			else {
+				px = x + i;
+			}
 			for (j = 0; j < 8; ++j) {
-				let rgbArray = this.getRGBPalette(palette, tile, subPalette, i, j);
-				if (horizontalFlip) {
-					px = x + 7 - i;
-				}
-				else {
-					px = x + i;
-				}
+				rgbArray = subPaletteArray[this.tiles[tile][i][j]];
 				if (verticalFlip) {
 					py = y + 7 - j;
 				}
 				else {
 					py = y + j;
 				}
-				let pos = 4 * px + stride * py;
+				pos = 4 * px + stride * py;
 				pixels[pos + 0] = (rgbArray >> 16) & 0xFF;
 				pixels[pos + 1] = (rgbArray >> 8) & 0xFF;
 				pixels[pos + 2] = (rgbArray) & 0xFF;
 			}
 		}
 		return pixels;
-	}
-	getRGBPalette(palette, tile, subPalette, i, j) {
-		let pos = this.tiles[tile][i][j];
-		let colorChunk = palette.getColors(subPalette)[pos];
-		return colorChunk;
 	}
 	/**
 	* Internal function - reads graphics from the specified block and builds
