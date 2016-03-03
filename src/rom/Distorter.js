@@ -16,6 +16,18 @@ export default class Distorter {
 // 		this.distortions = Array(4).fill(new DistortionEffect());
 		this.bitmap = bitmap;
 		this.original = null;
+		/* NOTE: Another discrepancy from Java: These values should be "short" and must have a specific precision. This seems to affect backgrounds with distortEffect === HORIZONTAL */
+		this.C1 = 1 / 512;
+		this.C2 = 8 * Math.PI / (1024 * 256);
+		this.C3 = Math.PI / 60;
+	}
+	setOffsetConstants(ticks, amplitude, amplitudeAcceleration, frequency, frequencyAcceleration, compression, compressionAcceleration, speed) {
+		/* Compute "current" values of amplitude, frequency and compression */
+		let t2 = ticks * 2;
+		this.scaleAmplitude = this.C1 * (amplitude + amplitudeAcceleration * t2);
+		this.scaleFrequency  = this.C2 * (frequency + (frequencyAcceleration * t2));
+		this.scaleCompression = 1 + (compression  + (compressionAcceleration * t2)) / 256;
+		this.scaleSpeed = this.C3 * speed * ticks;
 	}
 	overlayFrame(dst, letterbox, ticks, alpha, erase) {
 		let e = erase ? 1 : 0;
@@ -36,18 +48,8 @@ export default class Distorter {
 	* @return
 	* 	The distortion offset for the given (y, t) coordinates
 	*/
-	getAppliedOffset(y, t, distortionEffect, ampl, ampl_accel, s_freq, s_freq_accel, compr, compr_accel, speed) {
-		// N.B. another discrepancy from Java--these values should be "short," and
-		// must have a specific precision. this seems to effect HORIZONTAL backgrounds
-		let C1 = (1 / 512).toFixed(6);
-		let C2 = (8.0 * Math.PI / (1024 * 256)).toFixed(6);
-		let C3 = (Math.PI / 60).toFixed(6);
-		// Compute "current" values of amplitude, frequency, and compression
-		let amplitude = ampl + ampl_accel * t * 2;
-		let frequency = s_freq + s_freq_accel * t * 2;
-		let compression = compr + compr_accel * t * 2;
-		// Compute the value of the sinusoidal line offset function
-		let S = Math.round(C1 * amplitude * Math.sin((C2 * frequency * y + C3 * speed * t).toFixed(6)));
+	getAppliedOffset(y, distortionEffect) {
+		let S = Math.round(this.scaleAmplitude * Math.sin(this.scaleFrequency * y + this.scaleSpeed));
 		if (distortionEffect === HORIZONTAL) {
 			return S;
 		}
@@ -55,7 +57,7 @@ export default class Distorter {
 			return y % 2 === 0 ? -S : S;
 		}
 		else if (distortionEffect === VERTICAL) {
-			let L = Math.floor(y * (1 + compression / 256) + S) % 256;
+			let L = Math.floor(S + y * this.scaleCompression) % 256;
 			if (L < 0) {
 				L = 256 + L;
 			}
@@ -67,11 +69,11 @@ export default class Distorter {
 		return 0;
 	}
 	computeFrame(dst, src, distortionEffect, letterbox, ticks, alpha, erase, ampl, ampl_accel, s_freq, s_freq_accel, compr, compr_accel, speed) {
-		let bdst = dst;
-		let bsrc = src;
-		// TODO: hardcoing is bad.
-		let dstStride = 1024;
-		let srcStride = 1024;
+		let bDst = dst;
+		let bSrc = src;
+		/* TODO: Hardcoing is bad */
+		const dstStride = 1024;
+		const srcStride = 1024;
 		/*
 			Given the list of 4 distortions and the tick count, decide which
 			effect to use:
@@ -91,47 +93,45 @@ export default class Distorter {
 			I guess the trick is to be sure that my description above is correct.
 			Heh.
 		*/
-		let x = 0, y = 0;
-		for (y = 0; y < 224; y++) {
-			let S = this.getAppliedOffset(y, ticks, distortionEffect, ampl, ampl_accel, s_freq, s_freq_accel, compr, compr_accel, speed);
+		let x, y, bPos, sPos, dx;
+		this.setOffsetConstants(ticks, ampl, ampl_accel, s_freq, s_freq_accel, compr, compr_accel, speed);
+		for (y = 0; y < 224; ++y) {
+			let S = this.getAppliedOffset(y, distortionEffect);
 			let L = y;
 			if (distortionEffect === 3) {
 				L = S;
 			}
-			for (x = 0; x < 256; x++) {
-				let bpos = x * 4 + y * dstStride;
+			for (x = 0; x < 256; ++x) {
+				bPos = x * 4 + y * dstStride;
 				if (y < letterbox || y > 224 - letterbox) {
-					bdst[bpos + 2] = 0;
-					bdst[bpos + 1] = 0;
-					bdst[bpos + 0] = 0;
+					bDst[bPos + 2] = 0;
+					bDst[bPos + 1] = 0;
+					bDst[bPos + 0] = 0;
 					continue;
 				}
-				let dx = x;
+				dx = x;
 				if (distortionEffect === HORIZONTAL || distortionEffect === HORIZONTAL_INTERLACED) {
 					dx = (x + S) % 256;
 					if (dx < 0) {
 						dx = 256 + dx;
 					}
-					if (dx > 255) {
-						dx = 256 - dx;
-					}
 				}
-				let sPos = dx * 4 + L * srcStride;
+				sPos = dx * 4 + L * srcStride;
 				/* Either copy or add to the destination bitmap */
 				if (erase) {
-					bdst[bpos + 3] = 255;
-					bdst[bpos + 2] = alpha * bsrc[sPos + 2];
-					bdst[bpos + 1] = alpha * bsrc[sPos + 1];
-					bdst[bpos + 0] = alpha * bsrc[sPos + 0];
+					bDst[bPos + 3] = 255;
+					bDst[bPos + 2] = alpha * bSrc[sPos + 2];
+					bDst[bPos + 1] = alpha * bSrc[sPos + 1];
+					bDst[bPos + 0] = alpha * bSrc[sPos + 0];
 				}
 				else {
-					bdst[bpos + 3] = 255;
-					bdst[bpos + 2] += alpha * bsrc[sPos + 2];
-					bdst[bpos + 1] += alpha * bsrc[sPos + 1];
-					bdst[bpos + 0] += alpha * bsrc[sPos + 0];
+					bDst[bPos + 3] = 255;
+					bDst[bPos + 2] += alpha * bSrc[sPos + 2];
+					bDst[bPos + 1] += alpha * bSrc[sPos + 1];
+					bDst[bPos + 0] += alpha * bSrc[sPos + 0];
 				}
 			}
 		}
-		return bdst;
+		return bDst;
 	}
 };
