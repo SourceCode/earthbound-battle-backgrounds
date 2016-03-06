@@ -20,7 +20,7 @@ $ gulp
 - In 2008, the code for this project started out on [PK Hack](http://starmen.net/pkhack/) as a [Windows screensaver](https://forum.starmen.net/forum/Fan/Games/Kraken-EB-Battle-Animation-Screensaver/first), written in C# by [Mr. Accident](https://forum.starmen.net/members/168).
 - In 2010, [gjtorikian](https://github.com/gjtorikian) ported Mr. Accident's Windows screensaver from C# to [Java](https://github.com/gjtorikian/Earthbound-Battle-Backgrounds) to support Android Live screensavers.
 - In 2013, gjtorikian ported his own project from Java to [ES5 JavaScript](https://github.com/gjtorikian/Earthbound-Battle-Backgrounds-JS) to support all devices with a web browser. He is well aware that his port is terrible (in fact, he even wrote a [dedicated section](https://github.com/gjtorikian/Earthbound-Battle-Backgrounds-JS/blob/gh-pages/README.md#why-is-this-code-so-terrible) in his README.md, just to reflect that).
-- In 2016, [I](https://github.com/kdex) forked gjtorikian's "terrible" port of a port and soon started to re-write his code in [ES6+](https://github.com/kdex/earthbound-battle-backgrounds) for it to stay maintainable.
+- In 2016, [I](https://github.com/kdex) forked gjtorikian's port of a port and soon started to re-write his code in [ES6+](https://github.com/kdex/earthbound-battle-backgrounds) for it to stay maintainable.
 
 # How does this port differ?
 A great portion of the code was essentially re-written. Essentially, this code…
@@ -34,7 +34,7 @@ A great portion of the code was essentially re-written. Essentially, this code�
 - …removes UnderscoreJS-inspired functions and uses native ES6 functions instead.
 - …removes the weird and broken OOP model that gjtorikian had introduced (`registerType` etc.).
 - …removes notable comments such as [ugghhhhhhhhh](https://github.com/gjtorikian/Earthbound-Battle-Backgrounds-JS/blob/gh-pages/src/read_bgs_dat.js#L27).
-- …removes unnecessary brackets that gjtorikian put everywhere (cf. his README.md).
+- …removes unnecessary brackets that were put everywhere (cf. his README.md).
 - …removes Node Express.
 - …removes that weird `LOG_TAG` variable-based logging.
 - …fixes minor bugs.
