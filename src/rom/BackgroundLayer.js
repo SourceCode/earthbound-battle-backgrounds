@@ -1,4 +1,4 @@
-import ROM from "./ROM";
+import { getObject } from "./ROM";
 import BackgroundGraphics from "./BackgroundGraphics";
 import BackgroundPalette from "./BackgroundPalette";
 import DistortionEffect from "./DistortionEffect";
@@ -37,17 +37,17 @@ export default class BackgroundLayer {
 		return this.distorter.overlayFrame(bitmap, letterbox, ticks, alpha, erase);
 	}
 	loadGraphics(n) {
-		this.graphics = ROM.getObject(BackgroundGraphics, n);
+		this.graphics = getObject(BackgroundGraphics, n);
 	}
 	loadPalette(bg) {
-		this.paletteCycle = new PaletteCycle(ROM.getObject(BackgroundPalette, bg.paletteIndex), bg.paletteCycleType, bg.paletteCycle1Start, bg.paletteCycle1End, bg.paletteCycle2Start, bg.paletteCycle2End, bg.paletteCycleSpeed);
+		this.paletteCycle = new PaletteCycle(getObject(BackgroundPalette, bg.paletteIndex), bg.paletteCycleType, bg.paletteCycle1Start, bg.paletteCycle1End, bg.paletteCycle2Start, bg.paletteCycle2End, bg.paletteCycleSpeed);
 	}
 	loadEffect(n) {
 		this.distorter.effect = new DistortionEffect(n);
 	}
 	loadEntry(n) {
 		this.entry = n;
-		let bg = ROM.getObject(BattleBackground, n);
+		let bg = getObject(BattleBackground, n);
 		/* Set graphics/palette */
 		this.loadGraphics(bg.graphicsIndex);
 		this.loadPalette(bg);

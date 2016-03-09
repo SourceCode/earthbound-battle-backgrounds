@@ -1,4 +1,3 @@
-import "babel-polyfill";
 import ROM from "./rom/ROM";
 import BackgroundLayer from "./rom/BackgroundLayer";
 import Engine from "./Engine";
@@ -21,8 +20,7 @@ if (search.length) {
 function getLayer(index) {
 	return new BackgroundLayer(index);
 }
-let rom;
-let engine;
+let rom, engine;
 let setupEngine = ({
 	layers = state.layers,
 	frameSkip = 1,
@@ -104,11 +102,11 @@ function selectPrevious(secondLayer) {
 	try {
 		let response = await fetch("src/data/backgrounds-truncated.dat");
 		let data = await response.arrayBuffer();
-		let bgsData = new Uint8Array(data);
+		let backgroundData = new Uint8Array(data);
 		let padding = new Uint8Array(655872);
-		byteArray = new Uint8Array(padding.byteLength + bgsData.byteLength);
+		byteArray = new Uint8Array(padding.byteLength + backgroundData.byteLength);
 		byteArray.set(new Uint8Array(padding), 0);
-		byteArray.set(new Uint8Array(bgsData), padding.byteLength);
+		byteArray.set(new Uint8Array(backgroundData), padding.byteLength);
 		rom = new ROM(byteArray);
 		setupEngine();
 	}

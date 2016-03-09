@@ -2,7 +2,7 @@ export default class ROMGraphics {
 	constructor(bitsPerPixel) {
 		this.bitsPerPixel = bitsPerPixel;
 	}
-	/* Internal function - builds the tile array from the gfx buffer. */
+	/* Internal function - builds the tile array from the graphics buffer. */
 	buildTiles() {
 		let n = this.gfxROMGraphics.length / (8 * this.bitsPerPixel);
 		this.tiles = [];
@@ -30,7 +30,7 @@ export default class ROMGraphics {
 		let block = 0, tile = 0, subPalette = 0;
 		let n = 0, b1 = 0, b2 = 0;
 		let verticalFlip = false, horizontalFlip = false;
-		// TODO: hardcoding is bad; how do I get the stride normally?
+		/* TODO: Hardcoding is bad; how do I get the stride normally? */
 		let stride = 1024;
 		/* For each pixel in the 256×256 grid, we need to render the image found in the dump */
 		for (let i = 0; i < 32; ++i) {

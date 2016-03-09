@@ -6,7 +6,7 @@ process.env.FORCE_COLOR = true;
 gulp.task("js", () => {
 	return gulp.src("src/**/*.js")
 		.pipe(babel({
-			plugins: ["transform-es2015-modules-systemjs"]
+			plugins: ["transform-es2015-modules-umd"]
 		}))
 // 		.pipe(uglify({
 // 			mangle: true
