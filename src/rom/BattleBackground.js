@@ -92,7 +92,7 @@ export default class BattleBackground {
 	read(index) {
 		let main = ROM.readBlock(0xADEA1 + index * 17);
 		for (let i = 0; i < 17; i++) {
-			this.bbgData[i] = main.readShort();
+			this.bbgData[i] = main.readInt16();
 		}
 	}
 // 	Write(index) {

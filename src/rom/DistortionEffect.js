@@ -89,7 +89,7 @@ export default class DistortionEffect {
 	read(index) {
 		let main = ROM.readBlock(0x0AF908 + index * 17);
 		for (let i = 0; i < 17; ++i) {
-			this.data[i] = main.readShort();
+			this.data[i] = main.readInt16();
 		}
 	}
 };

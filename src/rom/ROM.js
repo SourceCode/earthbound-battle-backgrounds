@@ -95,7 +95,7 @@ export function readBlock(location) {
 	
 	// For now, just return a readable block; we'll worry about
 	// typing and free space later
-	return new Block(ROM.romData, location, false);
+	return new Block(location);
 }
 // Do not try to understand what this is doing. It will hurt you.
 // The only documentation for this decompression routine is a 65816
@@ -288,16 +288,16 @@ export function getCompressedSize(start, data) {
 	}
 	return bpos;
 }
+export let data;
 export default class ROM {
 	static objects = new Map();
-	static romData = [];
 	static layerCache = [];
 	static cached = false;
-	/* This is an internal optimization for the comp/decomp methods. Every element in this array is the binary reverse of its index. */
+	/* This is an internal optimization for the compress/decompress methods. Every element in this array is the binary reverse of its index. */
 	static reversedBytes = generateReversedBytes();
 	constructor(stream) {
 		if (!ROM.cached) {
-			ROM.romData = stream;
+			data = stream;
 			for (let constructor of [BattleBackground, BackgroundGraphics, BackgroundPalette]) {
 				let { handler } = constructor;
 				if (handler instanceof Function) {

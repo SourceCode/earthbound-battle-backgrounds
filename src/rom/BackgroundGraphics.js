@@ -10,10 +10,10 @@ export default class BackgroundGraphics {
 		/* Graphics pointer table entry */
 		let graphicsPointerBlock = ROM.readBlock(0xAD9A1 + index * 4);
 		/* Read graphics */
-		this.romGraphics.loadGraphics(ROM.readBlock(snesToHex(graphicsPointerBlock.readInt())));
+		this.romGraphics.loadGraphics(ROM.readBlock(snesToHex(graphicsPointerBlock.readInt32())));
 		/* Arrangement pointer table entry */
 		let arrayPointerBlock = ROM.readBlock(0xADB3D + index * 4);
-		let arrayPointer = snesToHex(arrayPointerBlock.readInt());
+		let arrayPointer = snesToHex(arrayPointerBlock.readInt32());
 		/* Read and decompress arrangement */
 		let arrayBlock = ROM.readBlock(arrayPointer);
 		this.arrayROMGraphics = arrayBlock.decompress();

@@ -7,33 +7,33 @@ export default class BackgroundPalette {
 	}
 	read(index) {
 		let pointer = ROM.readBlock(0xADCD9 + index * 4);
-		let address = snesToHex(pointer.readInt());
+		let address = snesToHex(pointer.readInt32());
 		let data = ROM.readBlock(address);
 		this.address = address;
 		this.readPalette(data, this.bitsPerPixel, 1);
 	}
 	/**
-	* Gets an array of colors representing one of this Palette's subpalettes.
+	* Gets an array of colors representing one of this palette's subpalettes.
 	*
-	* @param pal
+	* @param palette 
 	* The index of the subpalette to retrieve.
 	*
 	* @return An array containing the colors of the specified subpalette.
 	*/
-	getColors(pal) {
-		return this.colors[pal];
+	getColors(palette) {
+		return this.colors[palette];
 	}
 	getColorMatrix() {
 		return this.colors;
 	}
 	/**
-	* Internal function - reads Palette data from the given block into this
-	* Palette's colors array.
+	* Internal function - reads palette data from the given block into this
+	* palette's colors array.
 	*
 	* @param block
-	* Block to read Palette data from.
+	* Block to read palette data from.
 	* @param bitsPerPixel
-	* Bit depth; must be either 2 or 4.
+	* Bit depth: Must be either 2 or 4.
 	* @param count
 	* Number of subpalettes to read.
 	*/
@@ -43,16 +43,16 @@ export default class BackgroundPalette {
 		if (count < 1)
 			throw new Error("Palette error: Must specify positive number of subpalettes.");
 		this.colors = new Array(count);
-		for (let pal = 0; pal < count; pal++) {
-			this.colors[pal] = new Array(Math.pow(2, this.bitsPerPixel));
+		for (let palette = 0; palette < count; ++palette) {
+			this.colors[palette] = new Array(Math.pow(2, this.bitsPerPixel));
 			for (let i = 0; i < Math.pow(2, this.bitsPerPixel); i++) {
-				let clr16 = block.readDoubleShort()[0];
+				let clr16 = block.readDoubleShort();
 				let b = (((clr16 >> 10) & 31) * 8);
 				let g = (((clr16 >> 5) & 31) * 8);
 				let r = ((clr16 & 31) * 8);
 				// convert RGB to color int
 				// this code is straight out of Android: http://git.io/F1lZtw
-				this.colors[pal][i] = (0xFF << 24) | (r << 16) | (g << 8) | b;
+				this.colors[palette][i] = (0xFF << 24) | (r << 16) | (g << 8) | b;
 			}
 		}
 	}
