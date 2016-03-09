@@ -25,8 +25,8 @@ $ gulp
 # How does this port differ?
 A great portion of the code was essentially re-written. Essentially, this code…
 - …offers a 34% lower memory footprint than gjtorikian's JavaScript port when rendering.
-- …offers a 15% more idle time
-- …offers a 23% less time spent in `computeFrame()`
+- …offers 15% more idle time
+- …offers 23% less time spent in `computeFrame()`
 - …offers an over 100% faster implementation of `romGraphics.drawTile()`
 - …highly optimizes changing the background layers at runtime; gjtorikian's version will show a white flash when you're trying to change it. This port doesn't do that.
 - …uses [ES6](http://www.ecma-international.org/ecma-262/6.0/) or later language standards.
