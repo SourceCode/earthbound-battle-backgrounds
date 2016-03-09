@@ -40,4 +40,5 @@ A great portion of the code was essentially re-written. Essentially, this code�
 - …removes unnecessary brackets that were put everywhere (cf. his README.md).
 - …removes Node Express.
 - …removes that weird `LOG_TAG` variable-based logging.
+- …fixes pointer math (no more padding is needed).
 - …fixes minor bugs.
