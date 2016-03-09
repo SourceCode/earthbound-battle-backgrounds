@@ -81,9 +81,7 @@ export default class ROMGraphics {
 	* The block to read graphics data from
 	*/
 	loadGraphics(block) {
-		this.gfxROMGraphics = new Int16Array();
 		this.gfxROMGraphics = block.decompress();
-		this.address = block.address;
 		this.buildTiles();
 	}
 };

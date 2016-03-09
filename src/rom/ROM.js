@@ -35,7 +35,7 @@ export function snesToHex(address, header = true) {
 	if (header) {
 		address += 0x200;
 	}
-	return address;
+	return address - 0xA0200;
 };
 export function hexToSnes(address, header = true) {
 	if (header) {
@@ -111,7 +111,6 @@ export function readBlock(location) {
 // -6 Out of ninjas error
 // -7 Ask somebody else
 // -8 Unexpected end of data
-// public static
 /**
 * @param start
 * @param data
@@ -298,12 +297,7 @@ export default class ROM {
 	constructor(stream) {
 		if (!ROM.cached) {
 			data = stream;
-			for (let constructor of [BattleBackground, BackgroundGraphics, BackgroundPalette]) {
-				let { handler } = constructor;
-				if (handler instanceof Function) {
-					handler();
-				}
-			}
+			BattleBackground.handler();
 			ROM.cached = true;
 		}
 	}

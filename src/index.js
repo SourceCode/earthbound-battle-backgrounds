@@ -103,11 +103,7 @@ function selectPrevious(secondLayer) {
 		let response = await fetch("src/data/backgrounds-truncated.dat");
 		let data = await response.arrayBuffer();
 		let backgroundData = new Uint8Array(data);
-		let padding = new Uint8Array(655872);
-		byteArray = new Uint8Array(padding.byteLength + backgroundData.byteLength);
-		byteArray.set(new Uint8Array(padding), 0);
-		byteArray.set(new Uint8Array(backgroundData), padding.byteLength);
-		rom = new ROM(byteArray);
+		rom = new ROM(backgroundData);
 		setupEngine();
 	}
 	catch (e) {

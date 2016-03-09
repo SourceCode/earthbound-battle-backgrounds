@@ -6,7 +6,7 @@ export default class BackgroundPalette {
 		this.read(index);
 	}
 	read(index) {
-		let pointer = ROM.readBlock(0xADCD9 + index * 4);
+		let pointer = ROM.readBlock(0xDAD9 + index * 4);
 		let address = snesToHex(pointer.readInt32());
 		let data = ROM.readBlock(address);
 		this.address = address;
