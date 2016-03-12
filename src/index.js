@@ -7,7 +7,7 @@ let rom;
 *	@function buildROM
 *		Builds a ROM from the data dump.
 *	@return
-		`true` if ROM was successfully built, `false` otherwise
+*		`true` if ROM was successfully built, `false` otherwise
 */
 export async function initialize() {
 	if (rom) {

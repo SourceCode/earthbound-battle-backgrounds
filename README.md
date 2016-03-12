@@ -11,9 +11,23 @@ Yes. You can find a full-screen demo [here](https://kdex.github.io/earthbound-ba
 
 # Installation
 ```bash
-$ npm install
-$ jspm install
-$ gulp
+$ npm install -D earthbound-battle-backgrounds
+```
+
+# Example
+```js
+import { initialize, BackgroundLayer, Engine } from "earthbound-battle-backgrounds";
+(async () => {
+	await initialize();
+	/* Create two layers */
+	let bgLayer1 = new BackgroundLayer(153);
+	let bgLayer2 = new BackgroundLayer(298);
+	/* Create animation engine  */
+	let engine = new Engine([bgLayer1, bgLayer2], {
+		canvas: document.querySelector("#target-canvas");
+	});
+	engine.animate();
+})();
 ```
 
 # Project maintenance history

@@ -6,7 +6,8 @@ export default class Engine {
 		fps = 30,
 		aspectRatio = 0,
 		frameSkip = 1,
-		alpha = [0.5, 0.5]
+		alpha = [0.5, 0.5],
+		canvas = document.querySelector("canvas")
 	} = {}) {
 		this.layers = layers;
 		this.fps = fps;
@@ -14,6 +15,7 @@ export default class Engine {
 		this.frameSkip = frameSkip;
 		this.alpha = alpha;
 		this.tick = 0;
+		this.canvas = canvas;
 	}
 	animate() {
 		let then = Date.now();
@@ -21,7 +23,7 @@ export default class Engine {
 		let elapsed;
 		let fpsInterval = 1000 / this.fps;
 		let bitmap;
-		let canvas = document.querySelector("canvas");
+		let canvas = this.canvas;
 		let context = canvas.getContext("2d");
 		if (this.layers[0].entry && !this.layers[1].entry) {
 			this.alpha[0] = 1;
