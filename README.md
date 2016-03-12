@@ -9,12 +9,11 @@ Yes. You can find a full-screen demo [here](https://kdex.github.io/earthbound-ba
 - Use `[+]` and `[-]` to change layer 1.
 - Use `[Shift] + [+]` and `[Shift] + [-]` to change layer 2.
 
-# Where's the source code for the demo?
-You can find it [here](https://github.com/kdex/kdex.github.io/tree/master/earthbound-battle-backgrounds).
+The source code for the demo can be found [here](https://github.com/kdex/kdex.github.io/tree/master/earthbound-battle-backgrounds).
 
 # Installation
 ```bash
-$ npm install -D earthbound-battle-backgrounds
+$ npm install --save earthbound-battle-backgrounds
 ```
 
 # Example
