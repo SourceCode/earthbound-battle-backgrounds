@@ -2,7 +2,7 @@
 An optimized rewrite of [gjtorikian/Earthbound-Battle-Backgrounds-JS](https://github.com/gjtorikian/Earthbound-Battle-Backgrounds-JS) with cleaner code
 
 # What is this?
-Earthbound, also known as *Mother 2* in Japan, is a SNES game released in 1994. This project displays Earthbound's battle backgrounds browsers. In order to render the frames, currently a [Canvas 2D context](https://www.w3.org/TR/2dcontext/) is used. I'd be happy to use a [WebGL 2 context](https://www.khronos.org/registry/webgl/specs/latest/2.0/) once support is more wide-spread.
+Earthbound, also known as *Mother 2* in Japan, is a SNES game released in 1994. This project displays Earthbound's battle backgrounds in browsers. In order to render the frames, currently a [Canvas 2D context](https://www.w3.org/TR/2dcontext/) is used. I'd be happy to use a [WebGL 2 context](https://www.khronos.org/registry/webgl/specs/latest/2.0/) once support is more wide-spread.
 
 # Is there a demo?
 Yes. You can find a full-screen demo [here](https://kdex.github.io/earthbound-battle-backgrounds).
