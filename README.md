@@ -9,12 +9,16 @@ Yes. You can find a full-screen demo [here](https://kdex.github.io/earthbound-ba
 - Use `[+]` and `[-]` to change layer 1.
 - Use `[Shift] + [+]` and `[Shift] + [-]` to change layer 2.
 
+# Where's the source code for the demo?
+You can find it [here](https://github.com/kdex/kdex.github.io/tree/master/earthbound-battle-backgrounds).
+
 # Installation
 ```bash
 $ npm install -D earthbound-battle-backgrounds
 ```
 
 # Example
+This code is more or less equivalent to the demo from above, minus the key events.
 ```js
 import { initialize, BackgroundLayer, Engine } from "earthbound-battle-backgrounds";
 (async () => {
@@ -38,7 +42,9 @@ import { initialize, BackgroundLayer, Engine } from "earthbound-battle-backgroun
 
 # How does this project differ?
 A great portion of the code was essentially re-written. Essentially, this code…
-- …offers a 34% lower memory footprint than gjtorikian's JavaScript port when rendering.
+- …provides a programmatic API instead of a GUI.
+- …can therefore be consumed as a module.
+- …offers a 34% lower memory footprint than the original project when rendering.
 - …offers 15% more idle time
 - …offers 23% less time spent in `computeFrame()`
 - …offers an over 100% faster implementation of `romGraphics.drawTile()`
