@@ -34,15 +34,15 @@ import { initialize, BackgroundLayer, Engine } from "earthbound-battle-backgroun
 - In 2008, the code for this project started out on [PK Hack](http://starmen.net/pkhack/) as a [Windows screensaver](https://forum.starmen.net/forum/Fan/Games/Kraken-EB-Battle-Animation-Screensaver/first), written in C# by [Mr. Accident](https://forum.starmen.net/members/168). The source code has been published [here](https://github.com/gjtorikian/kraken).
 - In 2010, [gjtorikian](https://github.com/gjtorikian) ported Mr. Accident's Windows screensaver from C# to [Java](https://github.com/gjtorikian/Earthbound-Battle-Backgrounds) to support Android Live screensavers.
 - In 2013, gjtorikian ported his own project from Java to [ES5 JavaScript](https://github.com/gjtorikian/Earthbound-Battle-Backgrounds-JS) to support all devices with a web browser. He is well aware that his port is terrible (in fact, he even wrote a [dedicated section](https://github.com/gjtorikian/Earthbound-Battle-Backgrounds-JS/blob/gh-pages/README.md#why-is-this-code-so-terrible) in his README.md, just to reflect that).
-- In 2016, [I](https://github.com/kdex) forked gjtorikian's port of a port and soon started to re-write his code in [ES6+](https://github.com/kdex/earthbound-battle-backgrounds) for it to stay maintainable.
+- In 2016, [I](https://github.com/kdex) rewrote gjtorikian's port of a port in [ES6+](https://github.com/kdex/earthbound-battle-backgrounds) for it to stay maintainable.
 
-# How does this port differ?
+# How does this project differ?
 A great portion of the code was essentially re-written. Essentially, this code…
 - …offers a 34% lower memory footprint than gjtorikian's JavaScript port when rendering.
 - …offers 15% more idle time
 - …offers 23% less time spent in `computeFrame()`
 - …offers an over 100% faster implementation of `romGraphics.drawTile()`
-- …highly optimizes changing the background layers at runtime; gjtorikian's version will show a white flash when you're trying to change it. This port doesn't do that.
+- …highly optimizes changing the background layers at runtime; the original version will show a white flash when you're trying to change it. This project doesn't do that.
 - …uses [ES6](http://www.ecma-international.org/ecma-262/6.0/) or later language standards.
 - …doesn't use RequireJS, but [ES6 modules](http://www.2ality.com/2014/09/es6-modules-final.html).
 - …doesn't use functionally-scoped variable declarations (`var`), but `const` and `let`.
