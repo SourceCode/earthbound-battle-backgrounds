@@ -1,123 +1,44 @@
-import "whatwg-fetch";
+import isNode from "detect-node";
 import ROM from "./rom/ROM";
-import { default as BackgroundLayer, MINIMUM_LAYER, MAXIMUM_LAYER } from "./rom/BackgroundLayer";
-import Engine from "./Engine";
-let state = {
-	layers: [153, 298]
-};
-let search = location.search.substr(1);
-if (search.length) {
-	state.layers = search.split("-").map(e => Number.parseInt(e));
-	for (let i = 0; i < state.layers.length; ++i) {
-		let layer = state.layers[i];
-		if (layer > MAXIMUM_LAYER) {
-			state.layers[i] = MAXIMUM_LAYER;
-		}
-		if (layer < MINIMUM_LAYER) {
-			state.layers[i] = MINIMUM_LAYER;
-		}
+export Engine from "./Engine";
+export BackgroundLayer from "./rom/BackgroundLayer";
+let rom;
+/**
+*	@function buildROM
+*		Builds a ROM from the data dump.
+*	@return
+		`true` if ROM was successfully built, `false` otherwise
+*/
+export async function initialize() {
+	if (rom) {
+		return false;
 	}
-}
-function getLayer(index) {
-	return new BackgroundLayer(index);
-}
-let rom, engine;
-let setupEngine = ({
-	layers = state.layers,
-	frameSkip = 1,
-	aspectRatio = 0
-} = {}) => {
-	let [layer1, layer2] = layers;
-	let bgLayer1 = getLayer(layer1);
-	let bgLayer2 = getLayer(layer2);
-	engine = new Engine([bgLayer1, bgLayer2]);
-	engine.animate();
-};
-let byteArray = null;
-function updateState() {
-	history.replaceState(null, null, `${location.pathname}?${state.layers.join("-")}`);
-}
-function updateLayer(index) {
-	let layer = getLayer(state.layers[index]);
-	engine.layers[index] = layer;
-	let layerCount = state.layers.length;
-	let emptyLayers = state.layers.map((x, i) => x === 0 ? i : null).filter(x => x !== null);
-	let averageAlpha = 1 / (layerCount - emptyLayers.length) || 0;
-	let alphas = [];
-	for (let i = 0; i < engine.layers.length; ++i) {
-		let layer = engine.layers[i];
-		if (layer.entry === 0) {
-			alphas[i] = 0;
+	let backgroundData;
+	if (isNode) {
+		function toArrayBuffer(buffer) {
+			let arrayBuffer = new ArrayBuffer(buffer.length);
+			let view = new Uint8Array(arrayBuffer);
+			for (let i = 0; i < buffer.length; ++i) {
+				view[i] = buffer[i];
+			}
+			return view;
 		}
-		else {
-			alphas[i] = averageAlpha;
+		try {
+			/* Eval prevents `require` from being transformed */
+			let fs = eval(`require("fs")`);
+			let data = toArrayBuffer(fs.readFileSync(`${__dirname}/../src/data/backgrounds-truncated.dat`));
+			backgroundData = new Uint8Array(data);
 		}
-	}
-	engine.alpha = alphas;
-	/* Distorters should rewind */
-	engine.tick = 0;
-}
-function selectNext(secondLayer) {
-	if (!secondLayer) {
-		if (state.layers[0] < MAXIMUM_LAYER) {
-			++state.layers[0];
-			updateLayer(0);
-		}
-		else {
-			return;
+		catch (e) {
+			console.log(e);
 		}
 	}
 	else {
-		if (state.layers[1] < MAXIMUM_LAYER) {
-			++state.layers[1];
-			updateLayer(1);
-		}
-		else {
-			return;
-		}
-	}
-	updateState();
-}
-function selectPrevious(secondLayer) {
-	if (!secondLayer) {
-		if (state.layers[0] > 0) {
-			--state.layers[0];
-			updateLayer(0);
-		}
-		else {
-			return;
-		}
-	}
-	else {
-		if (state.layers[1] > 0) {
-			--state.layers[1];
-			updateLayer(1);
-		}
-		else {
-			return;
-		}
-	}
-	updateState();
-}
-(async () => {
-	try {
 		let response = await fetch("src/data/backgrounds-truncated.dat");
 		let data = await response.arrayBuffer();
-		let backgroundData = new Uint8Array(data);
-		rom = new ROM(backgroundData);
-		setupEngine();
+		backgroundData = new Uint8Array(data);
 	}
-	catch (e) {
-		console.error(e);
-	}
-})();
-document.body.addEventListener("keydown", e => {
-	switch (e.code) {
-		case "BracketRight":
-			selectNext(e.shiftKey);
-			break;
-		case "Slash":
-			selectPrevious(e.shiftKey);
-			break;
-	}
-});
+	/* This initializes *one* ROM instance with a bunch of static (!) properties. This is done to prevent exporting ROM, as this would make the API needlessly verbose. */
+	rom = new ROM(backgroundData);
+	return true;
+}

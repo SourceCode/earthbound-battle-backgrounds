@@ -2,7 +2,11 @@
   "name": "earthbound-battle-backgrounds",
   "version": "0.0.1",
   "description": "An API to render Earthbound's battle backgrounds in your browser",
-  "main": "index",
+  "main": "dist/index.js",
+  "scripts": {
+    "compile": "gulp",
+    "prepublish": "npm run compile"
+  },
   "devDependencies": {
     "babel-plugin-transform-es2015-modules-systemjs": "^6.6.5",
     "babel-plugin-transform-es2015-modules-umd": "^6.6.5",
@@ -11,20 +15,9 @@
     "gulp": "^3.9.1",
     "gulp-babel": "^6.1.2",
     "gulp-uglify": "^1.5.3",
-    "jspm": "^0.16.30"
   },
-  "jspm": {
-    "directories": {
-      "packages": "packages"
-    },
-    "dependencies": {
-      "babel-polyfill": "npm:babel-polyfill@^6.6.1",
-      "whatwg-fetch": "npm:whatwg-fetch@^0.11.0"
-    },
-    "devDependencies": {
-      "babel": "npm:babel-core@^6.6.5",
-      "babel-runtime": "npm:babel-runtime@^6.6.1",
-      "core-js": "npm:core-js@^2.1.4"
-    }
+  "dependencies": {
+    "babel-polyfill": "^6.7.2",
+    "detect-node": "^2.0.3"
   }
 }
