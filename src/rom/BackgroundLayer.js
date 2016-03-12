@@ -6,9 +6,9 @@ import BattleBackground from "./BattleBackground";
 import Distorter from "./Distorter";
 import PaletteCycle from "./PaletteCycle";
 const [WIDTH, HEIGHT] = [256, 256];
-export const MINIMUM_LAYER = 0;
-export const MAXIMUM_LAYER = 326;
 export default class BackgroundLayer {
+	static MINIMUM_LAYER = 0;
+	static MAXIMUM_LAYER = 326;
 	constructor(entry) {
 		this.graphics = null;
 		this.paletteCycle = null;

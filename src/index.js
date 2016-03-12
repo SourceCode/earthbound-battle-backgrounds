@@ -14,6 +14,7 @@ export async function initialize() {
 		return false;
 	}
 	let backgroundData;
+	let path = `${__dirname}/../src/data/backgrounds-truncated.dat`;
 	if (isNode) {
 		function toArrayBuffer(buffer) {
 			let arrayBuffer = new ArrayBuffer(buffer.length);
@@ -23,22 +24,17 @@ export async function initialize() {
 			}
 			return view;
 		}
-		try {
-			/* Eval prevents `require` from being transformed */
-			let fs = eval(`require("fs")`);
-			let data = toArrayBuffer(fs.readFileSync(`${__dirname}/../src/data/backgrounds-truncated.dat`));
-			backgroundData = new Uint8Array(data);
-		}
-		catch (e) {
-			console.log(e);
-		}
+		/* Eval prevents `require` from being transformed */
+		let fs = eval(`require("fs")`);
+		let data = toArrayBuffer(fs.readFileSync(path));
+		backgroundData = new Uint8Array(data);
 	}
 	else {
-		let response = await fetch("src/data/backgrounds-truncated.dat");
+		let response = await fetch(path);
 		let data = await response.arrayBuffer();
 		backgroundData = new Uint8Array(data);
 	}
 	/* This initializes *one* ROM instance with a bunch of static (!) properties. This is done to prevent exporting ROM, as this would make the API needlessly verbose. */
 	rom = new ROM(backgroundData);
 	return true;
-}
+};
