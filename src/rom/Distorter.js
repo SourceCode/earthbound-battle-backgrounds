@@ -1,4 +1,5 @@
-import {HORIZONTAL, HORIZONTAL_INTERLACED, VERTICAL} from "./DistortionEffect";
+import { HORIZONTAL, HORIZONTAL_INTERLACED, VERTICAL } from "./DistortionEffect";
+import { SNES_WIDTH, SNES_HEIGHT } from "../Engine";
 export default class Distorter {
 	constructor(bitmap) {
 		// There is some redundancy here: 'effect' is currently what is used
@@ -68,7 +69,7 @@ export default class Distorter {
 		}
 		return 0;
 	}
-	computeFrame(dst, src, distortionEffect, letterbox, ticks, alpha, erase, ampl, ampl_accel, s_freq, s_freq_accel, compr, compr_accel, speed) {
+	computeFrame(dst, src, distortionEffect, letterbox, ticks, alpha, erase, amplitude, ampliteAcceleration, frequency, frequencyAcceleration, compression, compressionAcceleration, speed) {
 		let bDst = dst;
 		let bSrc = src;
 		/* TODO: Hardcoing is bad */
@@ -94,16 +95,16 @@ export default class Distorter {
 			Heh.
 		*/
 		let x, y, bPos, sPos, dx;
-		this.setOffsetConstants(ticks, ampl, ampl_accel, s_freq, s_freq_accel, compr, compr_accel, speed);
-		for (y = 0; y < 224; ++y) {
+		this.setOffsetConstants(ticks, amplitude, ampliteAcceleration, frequency, frequencyAcceleration, compression, compressionAcceleration, speed);
+		for (y = 0; y < SNES_HEIGHT; ++y) {
 			let S = this.getAppliedOffset(y, distortionEffect);
 			let L = y;
-			if (distortionEffect === 3) {
+			if (distortionEffect === VERTICAL) {
 				L = S;
 			}
-			for (x = 0; x < 256; ++x) {
+			for (x = 0; x < SNES_WIDTH; ++x) {
 				bPos = x * 4 + y * dstStride;
-				if (y < letterbox || y > 224 - letterbox) {
+				if (y < letterbox || y > SNES_HEIGHT - letterbox) {
 					bDst[bPos + 2] = 0;
 					bDst[bPos + 1] = 0;
 					bDst[bPos + 0] = 0;

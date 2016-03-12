@@ -1,5 +1,6 @@
+import "whatwg-fetch";
 import ROM from "./rom/ROM";
-import BackgroundLayer from "./rom/BackgroundLayer";
+import { default as BackgroundLayer, MINIMUM_LAYER, MAXIMUM_LAYER } from "./rom/BackgroundLayer";
 import Engine from "./Engine";
 let state = {
 	layers: [153, 298]
@@ -9,11 +10,11 @@ if (search.length) {
 	state.layers = search.split("-").map(e => Number.parseInt(e));
 	for (let i = 0; i < state.layers.length; ++i) {
 		let layer = state.layers[i];
-		if (layer > 326) {
-			state.layers[i] = 326;
+		if (layer > MAXIMUM_LAYER) {
+			state.layers[i] = MAXIMUM_LAYER;
 		}
-		if (layer < 0) {
-			state.layers[i] = 0;
+		if (layer < MINIMUM_LAYER) {
+			state.layers[i] = MINIMUM_LAYER;
 		}
 	}
 }
@@ -58,7 +59,7 @@ function updateLayer(index) {
 }
 function selectNext(secondLayer) {
 	if (!secondLayer) {
-		if (state.layers[0] < 326) {
+		if (state.layers[0] < MAXIMUM_LAYER) {
 			++state.layers[0];
 			updateLayer(0);
 		}
@@ -67,7 +68,7 @@ function selectNext(secondLayer) {
 		}
 	}
 	else {
-		if (state.layers[1] < 326) {
+		if (state.layers[1] < MAXIMUM_LAYER) {
 			++state.layers[1];
 			updateLayer(1);
 		}

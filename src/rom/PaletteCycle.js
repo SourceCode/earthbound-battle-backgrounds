@@ -1,18 +1,17 @@
 export default class PaletteCycle {
-	constructor(pal, type, start1, end1, start2, end2, speed) {
-		this.pal = pal;
+	constructor(palette, type, start1, end1, start2, end2, speed) {
 		this.type = type;
 		this.start1 = start1;
 		this.end1 = end1;
 		this.start2 = start2;
 		this.end2 = end2;
-		this.speed = speed/ 2;
+		this.speed = speed / 2;
 		this.cycleCountdown = this.speed;
 		this.cycleCount = 0;
-		this.originalColors = this.pal.getColorMatrix();
+		this.originalColors = palette.getColorMatrix();
 		this.nowColors = [];
 		/* Duplicate the original colors to make cycle math easier */
-		for (let subPaletteNumber = 0; subPaletteNumber < this.originalColors.length; subPaletteNumber++) {
+		for (let subPaletteNumber = 0; subPaletteNumber < this.originalColors.length; ++subPaletteNumber) {
 			this.nowColors[subPaletteNumber] = [];
 			for (let i = 16; i < 32; ++i) {
 				this.originalColors[subPaletteNumber][i] = this.originalColors[subPaletteNumber][i - 16];
@@ -30,7 +29,7 @@ export default class PaletteCycle {
 		if (this.speed === 0) {
 			return false;
 		}
-		this.cycleCountdown -= 1;
+		--this.cycleCountdown;
 		if (this.cycleCountdown <= 0) {
 			this.cycleColors();
 			++this.cycleCount;
@@ -68,13 +67,13 @@ export default class PaletteCycle {
 		}
 		if (this.type === 3) {
 			let cycleLength = this.end1 - this.start1 + 1
-			let cycle1Position = this.cycleCount % (cycleLength*2)
+			let cycle1Position = this.cycleCount % (cycleLength * 2)
 			for (let subPaletteNumber = 0; subPaletteNumber < this.originalColors.length; ++subPaletteNumber) {
 				for (let i = this.start1; i <= this.end1; ++i) {
 					let newColor = i + cycle1Position;
 					let difference = 0;
 					if (newColor > this.end1) {
-						difference = newColor-this.end1-1;
+						difference = newColor-this.end1 - 1;
 						newColor = this.end1 - difference;
 						if (newColor < this.start1) {
 							difference = this.start1 - newColor - 1;

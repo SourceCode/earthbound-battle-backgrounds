@@ -1,4 +1,6 @@
 let frameID = -1;
+export const SNES_WIDTH = 256;
+export const SNES_HEIGHT = 224;
 export default class Engine {
 	constructor(layers = [], {
 		fps = 30,
@@ -30,9 +32,8 @@ export default class Engine {
 			this.alpha[1] = 1;
 		}
 		context.imageSmoothingEnabled = false;
-		/* SNES resolution */
-		canvas.width = 256;
-		canvas.height = 224;
+		canvas.width = SNES_WIDTH;
+		canvas.height = SNES_HEIGHT;
 		let image = context.getImageData(0, 0, canvas.width, canvas.height);
 		let drawFrame = () => {
 			frameID = requestAnimationFrame(drawFrame);
@@ -46,7 +47,7 @@ export default class Engine {
 				image.data.set(bitmap);
 				context.putImageData(image, 0, 0);
 			}
-		}
+		};
 		if (frameID > 0) {
 			window.cancelAnimationFrame(frameID);
 		}

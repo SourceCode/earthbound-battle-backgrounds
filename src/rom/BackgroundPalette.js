@@ -38,18 +38,21 @@ export default class BackgroundPalette {
 	* Number of subpalettes to read.
 	*/
 	readPalette(block, bitsPerPixel, count) {
-		if (this.bitsPerPixel != 2 && this.bitsPerPixel != 4)
+		if (this.bitsPerPixel !== 2 && this.bitsPerPixel !== 4) {
 			throw new Error("Palette error: Incorrect color depth specified.");
-		if (count < 1)
+		}
+		if (count < 1) {
 			throw new Error("Palette error: Must specify positive number of subpalettes.");
+		}
 		this.colors = new Array(count);
+		let power = 2 ** this.bitsPerPixel;
 		for (let palette = 0; palette < count; ++palette) {
-			this.colors[palette] = new Array(Math.pow(2, this.bitsPerPixel));
-			for (let i = 0; i < Math.pow(2, this.bitsPerPixel); i++) {
+			this.colors[palette] = new Array(power);
+			for (let i = 0; i < power; i++) {
 				let clr16 = block.readDoubleShort();
-				let b = (((clr16 >> 10) & 31) * 8);
-				let g = (((clr16 >> 5) & 31) * 8);
-				let r = ((clr16 & 31) * 8);
+				let b = ((clr16 >> 10) & 31) * 8;
+				let g = ((clr16 >> 5) & 31) * 8;
+				let r = (clr16 & 31) * 8;
 				// convert RGB to color int
 				// this code is straight out of Android: http://git.io/F1lZtw
 				this.colors[palette][i] = (0xFF << 24) | (r << 16) | (g << 8) | b;

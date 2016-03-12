@@ -18,7 +18,8 @@
       "packages": "packages"
     },
     "dependencies": {
-      "babel-polyfill": "npm:babel-polyfill@^6.6.1"
+      "babel-polyfill": "npm:babel-polyfill@^6.6.1",
+      "whatwg-fetch": "npm:whatwg-fetch@^0.11.0"
     },
     "devDependencies": {
       "babel": "npm:babel-core@^6.6.5",
