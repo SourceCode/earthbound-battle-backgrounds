@@ -7,6 +7,7 @@ import Distorter from "./Distorter";
 import PaletteCycle from "./PaletteCycle";
 const [WIDTH, HEIGHT] = [256, 256];
 export default class BackgroundLayer {
+	/* TODO: Remove this; information moved to class BattleBackground */
 	static MINIMUM_LAYER = 0;
 	static MAXIMUM_LAYER = 326;
 	constructor(entry) {
@@ -38,22 +39,25 @@ export default class BackgroundLayer {
 		}
 		return this.distorter.overlayFrame(bitmap, letterbox, ticks, alpha, erase);
 	}
-	loadGraphics(n) {
-		this.graphics = getObject(BackgroundGraphics, n);
+	loadGraphics(index) {
+		this.graphics = getObject(BackgroundGraphics, index);
 	}
-	loadPalette(bg) {
-		this.paletteCycle = new PaletteCycle(getObject(BackgroundPalette, bg.paletteIndex), bg.paletteCycleType, bg.paletteCycle1Start, bg.paletteCycle1End, bg.paletteCycle2Start, bg.paletteCycle2End, bg.paletteCycleSpeed);
+	loadPalette(background) {
+		this.paletteCycle = new PaletteCycle({
+			background,
+			palette: getObject(BackgroundPalette, background.paletteIndex)
+		});
 	}
-	loadEffect(n) {
-		this.distorter.effect = new DistortionEffect(n);
+	loadEffect(index) {
+		this.distorter.effect = new DistortionEffect(index);
 	}
-	loadEntry(n) {
-		this.entry = n;
-		let bg = getObject(BattleBackground, n);
+	loadEntry(index) {
+		this.entry = index;
+		let background = getObject(BattleBackground, index);
 		/* Set graphics/palette */
-		this.loadGraphics(bg.graphicsIndex);
-		this.loadPalette(bg);
-		let animation = bg.animation;
+		this.loadGraphics(background.graphicsIndex);
+		this.loadPalette(background);
+		let animation = background.animation;
 		let e1 = (animation >> 24) & 0xFF;
 		let e2 = (animation >> 16) & 0xFF;
 		this.loadEffect(e2 || e1);

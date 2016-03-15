@@ -1,11 +1,15 @@
 export default class PaletteCycle {
-	constructor(palette, type, start1, end1, start2, end2, speed) {
-		this.type = type;
-		this.start1 = start1;
-		this.end1 = end1;
-		this.start2 = start2;
-		this.end2 = end2;
-		this.speed = speed / 2;
+	constructor({
+		background,
+		palette
+	}) {
+		this.type = background.paletteCycleType;
+		this.start1 = background.paletteCycle1Start;
+		this.end1 = background.paletteCycle1End;
+		this.start2 = background.paletteCycle2Start;
+		this.end2 = background.paletteCycle2End;
+		/* TODO: Why divide by 2? */
+		this.speed = background.paletteCycleSpeed / 2;
 		this.cycleCountdown = this.speed;
 		this.cycleCount = 0;
 		this.originalColors = palette.getColorMatrix();
