@@ -1,4 +1,4 @@
-import ROM from "./ROM";
+import { readBlock } from "./ROM";
 export const HORIZONTAL = 1;
 export const HORIZONTAL_INTERLACED = 2;
 export const VERTICAL = 3;
@@ -87,7 +87,7 @@ export default class DistortionEffect {
 		this.data[16] = value >> 8;
 	}
 	read(index) {
-		let main = ROM.readBlock(0xF708 + index * 17);
+		let main = readBlock(0xF708 + index * 17);
 		for (let i = 0; i < 17; ++i) {
 			this.data[i] = main.readInt16();
 		}
