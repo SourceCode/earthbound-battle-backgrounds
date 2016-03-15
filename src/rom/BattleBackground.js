@@ -1,6 +1,8 @@
 import ROM from "./ROM";
 import BackgroundPalette from "./BackgroundPalette";
 import BackgroundGraphics from "./BackgroundGraphics";
+/* In the ROM, each battle background struct at 0xADEA1 takes up 17 bytes. */
+const STRUCT_SIZE = 17;
 export default class BattleBackground {
 	/*
 	* Background data table: $CADCA1
@@ -24,8 +26,10 @@ export default class BattleBackground {
 	* 15 Effects
 	* 16 Effects
 	*/
+	static MINIMUM_INDEX = 0;
+	static MAXIMUM_INDEX = 326;
 	constructor(i = 0) {
-		this.bbgData = new Int16Array(17);
+		this.bbgData = new Int16Array(STRUCT_SIZE);
 		this.read(i);
 	}
 	/**
@@ -82,6 +86,19 @@ export default class BattleBackground {
 	get paletteCycleSpeed() {
 		return this.bbgData[8];
 	}
+	/* TODO: Implement these! */
+	get horizontalMovement() {
+		return this.bbgData[9];
+	}
+	get verticalMovement() {
+		return this.bbgData[10];
+	}
+	get horizontalAcceleration() {
+		return this.bbgData[11];
+	}
+	get verticalAcceleration() {
+		return this.bbgData[12];
+	}
 	/**
 	* Bytes 13-16 of BG data in big-endian order. Exact function unknown;
 	* related to background animation effects.
@@ -90,18 +107,11 @@ export default class BattleBackground {
 		return (this.bbgData[13] << 24) + (this.bbgData[14] << 16) + (this.bbgData[15] << 8) + this.bbgData[16];
 	}
 	read(index) {
-		let main = ROM.readBlock(0xDCA1 + index * 17);
-		for (let i = 0; i < 17; i++) {
+		let main = ROM.readBlock(0xDCA1 + index * STRUCT_SIZE);
+		for (let i = 0; i < STRUCT_SIZE; ++i) {
 			this.bbgData[i] = main.readInt16();
 		}
 	}
-// 	Write(index) {
-// 		// We can just allocate a fixed block here:
-// 		let main = this.parent.AllocateFixedBlock(17, 0xADEA1 + index * 17);
-// 		for (let i = 0; i < 17; i++) {
-// 			main.Write(this.bbgData[i]);
-// 		}
-// 	}
 	/**
 	* The handler for loading/saving all battle BGs
 	*/
@@ -109,17 +119,17 @@ export default class BattleBackground {
 		/* The only way to determine the bit depth of each BG Palette is to check the bit depth of the backgrounds that use it - so, first we create an array to track Palette bit depths: */
 		let paletteBits = new Int32Array(114);
 		let graphicsBits = new Int32Array(103);
-		for (let i = 0; i < 327; ++i) {
-			let bg = new BattleBackground(i);
-			ROM.add(bg);
-			/* Now that the BG has been read, update the BPP entry for its palette. We can also check to make sure palettes are used consistently: */
-			let palette = bg.paletteIndex;
-			let bitsPerPixel = bg.bitsPerPixel;
+		for (let i = BattleBackground.MINIMUM_INDEX; i <= BattleBackground.MAXIMUM_INDEX; ++i) {
+			let background = new BattleBackground(i);
+			ROM.add(background);
+			/* Now that the background has been read, update the BPP entry for its palette. We can also check to make sure palettes are used consistently: */
+			let palette = background.paletteIndex;
+			let bitsPerPixel = background.bitsPerPixel;
 			if (paletteBits[palette] && paletteBits[palette] !== bitsPerPixel) {
-				throw new Exception("BattleBackground Palette Error: Inconsistent bit depth");
+				throw new Exception("BattleBackground palette Error: Inconsistent bit depth");
 			}
 			paletteBits[palette] = bitsPerPixel;
-			graphicsBits[bg.graphicsIndex] = bitsPerPixel;
+			graphicsBits[background.graphicsIndex] = bitsPerPixel;
 		}
 		/* Now load palettes */
 		for (let i = 0; i < 114; ++i) {
