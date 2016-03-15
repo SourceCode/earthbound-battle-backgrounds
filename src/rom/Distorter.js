@@ -1,5 +1,12 @@
 import { HORIZONTAL, HORIZONTAL_INTERLACED, VERTICAL } from "./DistortionEffect";
 import { SNES_WIDTH, SNES_HEIGHT } from "../Engine";
+const R = 0;
+const G = 1;
+const B = 2;
+const A = 3;
+function mod(n, m) {
+	return ((n % m) + m) % m;
+}
 export default class Distorter {
 	constructor(bitmap) {
 		// There is some redundancy here: 'effect' is currently what is used
@@ -16,7 +23,6 @@ export default class Distorter {
 		// scrolling and Palette animation, which still need to be implemented).
 // 		this.distortions = Array(4).fill(new DistortionEffect());
 		this.bitmap = bitmap;
-		this.original = null;
 		/* NOTE: Another discrepancy from Java: These values should be "short" and must have a specific precision. This seems to affect backgrounds with distortEffect === HORIZONTAL */
 		this.C1 = 1 / 512;
 		this.C2 = 8 * Math.PI / (1024 * 256);
@@ -25,14 +31,14 @@ export default class Distorter {
 	setOffsetConstants(ticks, amplitude, amplitudeAcceleration, frequency, frequencyAcceleration, compression, compressionAcceleration, speed) {
 		/* Compute "current" values of amplitude, frequency and compression */
 		let t2 = ticks * 2;
-		this.scaleAmplitude = this.C1 * (amplitude + amplitudeAcceleration * t2);
-		this.scaleFrequency  = this.C2 * (frequency + (frequencyAcceleration * t2));
-		this.scaleCompression = 1 + (compression  + (compressionAcceleration * t2)) / 256;
-		this.scaleSpeed = this.C3 * speed * ticks;
+		this.amplitude = this.C1 * (amplitude + amplitudeAcceleration * t2);
+		this.frequency  = this.C2 * (frequency + (frequencyAcceleration * t2));
+		this.compression = 1 + (compression  + (compressionAcceleration * t2)) / 256;
+		this.speed = this.C3 * speed * ticks;
+		this.S = y => Math.round(this.amplitude * Math.sin(this.frequency * y + this.speed));
 	}
 	overlayFrame(dst, letterbox, ticks, alpha, erase) {
-		let e = erase ? 1 : 0;
-		return this.computeFrame(dst, this.bitmap, this.effect.type, letterbox, ticks, alpha, e, this.effect.amplitude, this.effect.amplitudeAcceleration, this.effect.frequency, this.effect.frequencyAcceleration, this.effect.compression, this.effect.compressionAcceleration, this.effect.speed);
+		return this.computeFrame(dst, this.bitmap, this.effect.type, letterbox, ticks, alpha, erase, this.effect.amplitude, this.effect.amplitudeAcceleration, this.effect.frequency, this.effect.frequencyAcceleration, this.effect.compression, this.effect.compressionAcceleration, this.effect.speed);
 	}
 	/**
 	* Evaluates the distortion effect at the given destination line and
@@ -50,28 +56,19 @@ export default class Distorter {
 	* 	The distortion offset for the given (y, t) coordinates
 	*/
 	getAppliedOffset(y, distortionEffect) {
-		let S = Math.round(this.scaleAmplitude * Math.sin(this.scaleFrequency * y + this.scaleSpeed));
-		if (distortionEffect === HORIZONTAL) {
-			return S;
+		switch (distortionEffect) {
+			case HORIZONTAL:
+				return this.S(y);
+			case HORIZONTAL_INTERLACED:
+				return y % 2 === 0 ? -this.S(y) : this.S(y);
+			case VERTICAL:
+				/* Compute L */
+				return mod(Math.floor(this.S(y) + y * this.compression), 256)
 		}
-		else if (distortionEffect === HORIZONTAL_INTERLACED) {
-			return y % 2 === 0 ? -S : S;
-		}
-		else if (distortionEffect === VERTICAL) {
-			let L = Math.floor(S + y * this.scaleCompression) % 256;
-			if (L < 0) {
-				L = 256 + L;
-			}
-			if (L > 255) {
-				L = 256 - L;
-			}
-			return L;
-		}
-		return 0;
 	}
-	computeFrame(dst, src, distortionEffect, letterbox, ticks, alpha, erase, amplitude, ampliteAcceleration, frequency, frequencyAcceleration, compression, compressionAcceleration, speed) {
-		let bDst = dst;
-		let bSrc = src;
+	computeFrame(destinationBitmap, sourceBitmap, distortionEffect, letterbox, ticks, alpha, erase, amplitude, ampliteAcceleration, frequency, frequencyAcceleration, compression, compressionAcceleration, speed) {
+		let newBitmap = destinationBitmap;
+		let oldBitmap = sourceBitmap;
 		/* TODO: Hardcoing is bad */
 		const dstStride = 1024;
 		const srcStride = 1024;
@@ -97,42 +94,40 @@ export default class Distorter {
 		let x, y, bPos, sPos, dx;
 		this.setOffsetConstants(ticks, amplitude, ampliteAcceleration, frequency, frequencyAcceleration, compression, compressionAcceleration, speed);
 		for (y = 0; y < SNES_HEIGHT; ++y) {
-			let S = this.getAppliedOffset(y, distortionEffect);
+			let offset = this.getAppliedOffset(y, distortionEffect);
 			let L = y;
 			if (distortionEffect === VERTICAL) {
-				L = S;
+				L = offset;
 			}
 			for (x = 0; x < SNES_WIDTH; ++x) {
 				bPos = x * 4 + y * dstStride;
 				if (y < letterbox || y > SNES_HEIGHT - letterbox) {
-					bDst[bPos + 2] = 0;
-					bDst[bPos + 1] = 0;
-					bDst[bPos + 0] = 0;
+					newBitmap[bPos + R] = 0;
+					newBitmap[bPos + G] = 0;
+					newBitmap[bPos + B] = 0;
+					newBitmap[bPos + A] = 255;
 					continue;
 				}
 				dx = x;
 				if (distortionEffect === HORIZONTAL || distortionEffect === HORIZONTAL_INTERLACED) {
-					dx = (x + S) % 256;
-					if (dx < 0) {
-						dx = 256 + dx;
-					}
+					dx = mod(x + offset, SNES_WIDTH);
 				}
 				sPos = dx * 4 + L * srcStride;
 				/* Either copy or add to the destination bitmap */
 				if (erase) {
-					bDst[bPos + 3] = 255;
-					bDst[bPos + 2] = alpha * bSrc[sPos + 2];
-					bDst[bPos + 1] = alpha * bSrc[sPos + 1];
-					bDst[bPos + 0] = alpha * bSrc[sPos + 0];
+					newBitmap[bPos + R] = alpha * oldBitmap[sPos + R];
+					newBitmap[bPos + G] = alpha * oldBitmap[sPos + G];
+					newBitmap[bPos + B] = alpha * oldBitmap[sPos + B];
+					newBitmap[bPos + A] = 255;
 				}
 				else {
-					bDst[bPos + 3] = 255;
-					bDst[bPos + 2] += alpha * bSrc[sPos + 2];
-					bDst[bPos + 1] += alpha * bSrc[sPos + 1];
-					bDst[bPos + 0] += alpha * bSrc[sPos + 0];
+					newBitmap[bPos + R] += alpha * oldBitmap[sPos + R];
+					newBitmap[bPos + G] += alpha * oldBitmap[sPos + G];
+					newBitmap[bPos + B] += alpha * oldBitmap[sPos + B];
+					newBitmap[bPos + A] = 255;
 				}
 			}
 		}
-		return bDst;
+		return newBitmap;
 	}
 };
