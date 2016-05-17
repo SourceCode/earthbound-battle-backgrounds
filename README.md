@@ -6,8 +6,8 @@ Earthbound, also known as *Mother 2* in Japan, is a SNES game released in 1994. 
 
 ## Is there a demo?
 Yes. You can find a full-screen demo [here](https://kdex.github.io/earthbound-battle-backgrounds).
-- Use `[+]` and `[-]` to change layer 1.
-- Use `[Shift] + [+]` and `[Shift] + [-]` to change layer 2.
+- Use `[←]` and `[→]` to change layer 1.
+- Use `[↑]` and `[↓]` to change layer 2.
 
 The source code for the demo can be found [here](https://github.com/kdex/kdex.github.io/tree/master/earthbound-battle-backgrounds).
 
