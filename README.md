@@ -21,10 +21,10 @@ This code is more or less equivalent to the demo from above, minus the key event
 ```js
 import { BackgroundLayer, Engine } from "earthbound-battle-backgrounds";
 /* Create two layers */
-let bgLayer1 = new BackgroundLayer(153);
-let bgLayer2 = new BackgroundLayer(298);
+const layer1 = new BackgroundLayer(153);
+const layer2 = new BackgroundLayer(298);
 /* Create animation engine  */
-let engine = new Engine([bgLayer1, bgLayer2], {
+const engine = new Engine([layer1, layer2], {
 	canvas: document.querySelector("#target-canvas");
 });
 engine.animate();
