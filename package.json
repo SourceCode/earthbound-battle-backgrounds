@@ -13,13 +13,14 @@
     "prepublish": "npm run compile"
   },
   "devDependencies": {
-    "arraybuffer-loader": "^0.2.1",
+    "babel-core": "^6.17.0",
     "babel-loader": "^6.2.5",
     "babel-plugin-transform-es2015-modules-umd": "^6.12.0",
     "babel-plugin-transform-runtime": "^6.15.0",
     "babel-preset-latest": "^6.16.0",
     "babel-preset-stage-0": "^6.16.0",
-    "webpack": "2.1.0-beta.25"
+    "binary-loader": "^0.0.1",
+    "webpack": "beta"
   },
   "dependencies": {
     "babel-polyfill": "^6.16.0"

@@ -4,7 +4,7 @@ const SOURCE = path.join(__dirname, "src");
 const DESTINATION = path.join(__dirname, "dist");
 const ENV = process.env.NODE_ENV;
 const isDebug = ENV === "development";
-const configuration = {
+export default {
 	context: __dirname,
 	entry: {
 		index: "./src"
@@ -13,12 +13,14 @@ const configuration = {
 		path: DESTINATION,
 		publicPath: ".",
 		filename: "[name].js",
-		chunkFilename: "[name]-[chunkhash].js"
+		chunkFilename: "[name]-[chunkhash].js",
+		libraryTarget: "umd"
 	},
 	module: {
-		loaders: [{
+		rules: [{
 			test: SOURCE,
-			loader: "babel-loader"
+			use: "babel-loader",
+			exclude: "node_modules"
 		}]
 	},
 	devtool: isDebug ? "inline-sourcemap" : false,
@@ -30,5 +32,4 @@ const configuration = {
 			sourcemap: false
 		})
 	]
-};
-export default configuration;
+}

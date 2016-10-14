@@ -1,6 +1,6 @@
 import ROM from "./rom/ROM";
-import data from "arraybuffer!../data/backgrounds-truncated.dat";
+import data from "binary!../data/backgrounds-truncated.dat";
 export Engine from "./Engine";
 export BackgroundLayer from "./rom/BackgroundLayer";
-const backgroundData = new Uint8Array(data);
-new ROM(new Uint8Array(data));
+const backgroundData = new Uint8Array(Array.from(data).map(x => x.charCodeAt(0)));
+new ROM(backgroundData);
