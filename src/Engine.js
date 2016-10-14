@@ -52,7 +52,7 @@ export default class Engine {
 			}
 		};
 		if (frameID > 0) {
-			window.cancelAnimationFrame(frameID);
+			global.cancelAnimationFrame(frameID);
 		}
 		drawFrame();
 	}

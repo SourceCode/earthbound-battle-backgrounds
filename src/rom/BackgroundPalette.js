@@ -1,4 +1,4 @@
-import { default as ROM, snesToHex } from "./ROM";
+import { readBlock, snesToHex } from "./ROM";
 export default class BackgroundPalette {
 	constructor(index, bitsPerPixel) {
 		this.colors = null;
@@ -6,9 +6,9 @@ export default class BackgroundPalette {
 		this.read(index);
 	}
 	read(index) {
-		let pointer = ROM.readBlock(0xDAD9 + index * 4);
+		let pointer = readBlock(0xDAD9 + index * 4);
 		let address = snesToHex(pointer.readInt32());
-		let data = ROM.readBlock(address);
+		let data = readBlock(address);
 		this.address = address;
 		this.readPalette(data, this.bitsPerPixel, 1);
 	}

@@ -1,4 +1,4 @@
-import { default as ROM, snesToHex } from "./ROM";
+import { readBlock, snesToHex } from "./ROM";
 import ROMGraphics from "./ROMGraphics";
 export default class BackgroundGraphics {
 	constructor(index, bitsPerPixel) {
@@ -8,14 +8,14 @@ export default class BackgroundGraphics {
 	}
 	read(index) {
 		/* Graphics pointer table entry */
-		let graphicsPointerBlock = ROM.readBlock(0xD7A1 + index * 4);
+		let graphicsPointerBlock = readBlock(0xD7A1 + index * 4);
 		/* Read graphics */
-		this.romGraphics.loadGraphics(ROM.readBlock(snesToHex(graphicsPointerBlock.readInt32())));
+		this.romGraphics.loadGraphics(readBlock(snesToHex(graphicsPointerBlock.readInt32())));
 		/* Arrangement pointer table entry */
-		let arrayPointerBlock = ROM.readBlock(0xD93D + index * 4);
+		let arrayPointerBlock = readBlock(0xD93D + index * 4);
 		let arrayPointer = snesToHex(arrayPointerBlock.readInt32());
 		/* Read and decompress arrangement */
-		let arrayBlock = ROM.readBlock(arrayPointer);
+		let arrayBlock = readBlock(arrayPointer);
 		this.arrayROMGraphics = arrayBlock.decompress();
 	}
 	draw(bitmap, palette) {

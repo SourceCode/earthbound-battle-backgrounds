@@ -1,4 +1,4 @@
-import ROM from "./ROM";
+import { readBlock, add } from "./ROM";
 import BackgroundPalette from "./BackgroundPalette";
 import BackgroundGraphics from "./BackgroundGraphics";
 /* In the ROM, each battle background struct at 0xADEA1 takes up 17 bytes. */
@@ -107,7 +107,7 @@ export default class BattleBackground {
 		return (this.bbgData[13] << 24) + (this.bbgData[14] << 16) + (this.bbgData[15] << 8) + this.bbgData[16];
 	}
 	read(index) {
-		let main = ROM.readBlock(0xDCA1 + index * STRUCT_SIZE);
+		let main = readBlock(0xDCA1 + index * STRUCT_SIZE);
 		for (let i = 0; i < STRUCT_SIZE; ++i) {
 			this.bbgData[i] = main.readInt16();
 		}
@@ -121,7 +121,7 @@ export default class BattleBackground {
 		let graphicsBits = new Int32Array(103);
 		for (let i = BattleBackground.MINIMUM_INDEX; i <= BattleBackground.MAXIMUM_INDEX; ++i) {
 			let background = new BattleBackground(i);
-			ROM.add(background);
+			add(background);
 			/* Now that the background has been read, update the BPP entry for its palette. We can also check to make sure palettes are used consistently: */
 			let palette = background.paletteIndex;
 			let bitsPerPixel = background.bitsPerPixel;
@@ -133,11 +133,11 @@ export default class BattleBackground {
 		}
 		/* Now load palettes */
 		for (let i = 0; i < 114; ++i) {
-			ROM.add(new BackgroundPalette(i, paletteBits[i]));
+			add(new BackgroundPalette(i, paletteBits[i]));
 		}
 		/* Load graphics */
 		for (let i = 0; i < 103; ++i) {
-			ROM.add(new BackgroundGraphics(i, graphicsBits[i]));
+			add(new BackgroundGraphics(i, graphicsBits[i]));
 		}
 	}
 };
