@@ -13,26 +13,22 @@ The source code for the demo can be found [here](https://github.com/kdex/kdex.gi
 
 ## Installation
 ```bash
-$ npm install --save earthbound-battle-backgrounds
+$ npm i -S earthbound-battle-backgrounds
 ```
 
 ## Example
 This code is more or less equivalent to the demo from above, minus the key events.
 ```js
-import { initialize, BackgroundLayer, Engine } from "earthbound-battle-backgrounds";
-(async () => {
-	await initialize();
-	/* Create two layers */
-	let bgLayer1 = new BackgroundLayer(153);
-	let bgLayer2 = new BackgroundLayer(298);
-	/* Create animation engine  */
-	let engine = new Engine([bgLayer1, bgLayer2], {
-		canvas: document.querySelector("#target-canvas");
-	});
-	engine.animate();
-})();
+import { BackgroundLayer, Engine } from "earthbound-battle-backgrounds";
+/* Create two layers */
+let bgLayer1 = new BackgroundLayer(153);
+let bgLayer2 = new BackgroundLayer(298);
+/* Create animation engine  */
+let engine = new Engine([bgLayer1, bgLayer2], {
+	canvas: document.querySelector("#target-canvas");
+});
+engine.animate();
 ```
-
 ## Project maintenance history
 - In 2008, the code for this project started out on [PK Hack](http://starmen.net/pkhack/) as a [Windows screensaver](https://forum.starmen.net/forum/Fan/Games/Kraken-EB-Battle-Animation-Screensaver/first), written in C# by [Mr. Accident](https://forum.starmen.net/members/168). The source code has been published [here](https://github.com/gjtorikian/kraken).
 - In 2010, [gjtorikian](https://github.com/gjtorikian) ported Mr. Accident's Windows screensaver from C# to [Java](https://github.com/gjtorikian/Earthbound-Battle-Backgrounds) to support Android Live screensavers.
