@@ -107,7 +107,7 @@ export default class BattleBackground {
 		return (this.bbgData[13] << 24) + (this.bbgData[14] << 16) + (this.bbgData[15] << 8) + this.bbgData[16];
 	}
 	read(index) {
-		let main = readBlock(0xDCA1 + index * STRUCT_SIZE);
+		const main = readBlock(0xDCA1 + index * STRUCT_SIZE);
 		for (let i = 0; i < STRUCT_SIZE; ++i) {
 			this.bbgData[i] = main.readInt16();
 		}
@@ -117,16 +117,16 @@ export default class BattleBackground {
 	*/
 	static handler() {
 		/* The only way to determine the bit depth of each BG Palette is to check the bit depth of the backgrounds that use it - so, first we create an array to track Palette bit depths: */
-		let paletteBits = new Int32Array(114);
-		let graphicsBits = new Int32Array(103);
+		const paletteBits = new Int32Array(114);
+		const graphicsBits = new Int32Array(103);
 		for (let i = BattleBackground.MINIMUM_INDEX; i <= BattleBackground.MAXIMUM_INDEX; ++i) {
-			let background = new BattleBackground(i);
+			const background = new BattleBackground(i);
 			add(background);
 			/* Now that the background has been read, update the BPP entry for its palette. We can also check to make sure palettes are used consistently: */
-			let palette = background.paletteIndex;
-			let bitsPerPixel = background.bitsPerPixel;
+			const palette = background.paletteIndex;
+			const bitsPerPixel = background.bitsPerPixel;
 			if (paletteBits[palette] && paletteBits[palette] !== bitsPerPixel) {
-				throw new Exception("BattleBackground palette Error: Inconsistent bit depth");
+				throw new Error("BattleBackground palette Error: Inconsistent bit depth");
 			}
 			paletteBits[palette] = bitsPerPixel;
 			graphicsBits[background.graphicsIndex] = bitsPerPixel;
@@ -140,4 +140,4 @@ export default class BattleBackground {
 			add(new BackgroundGraphics(i, graphicsBits[i]));
 		}
 	}
-};
+}

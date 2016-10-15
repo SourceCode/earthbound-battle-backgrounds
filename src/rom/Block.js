@@ -1,4 +1,4 @@
-import { getCompressedSize, decompress, data }  from "./ROM";
+import { getCompressedSize, decompress, data } from "./ROM";
 /* Represents a chunk of the ROM's data requested by an object for reading or writing. A requested block should always correspond exactly to an area of strictly contiguous data within an object. */
 export default class Block {
 	constructor(location) {
@@ -13,12 +13,12 @@ export default class Block {
 	* @return An array containing the decompressed data.
 	*/
 	decompress() {
-		let size = getCompressedSize(this.pointer, data);
+		const size = getCompressedSize(this.pointer, data);
 		if (size < 1) {
 			throw new Error(`Invalid compressed data: ${size}`);
 		}
 		let blockOutput = new Int16Array(size);
-		let read = 0;
+		const read = 0;
 		blockOutput = decompress(this.pointer, data, blockOutput, read);
 		if (blockOutput === null) {
 			throw new Error("Computed and actual decompressed sizes do not match.");
@@ -42,4 +42,4 @@ export default class Block {
 		const fakeShort = new Int16Array([this.readInt16() + (this.readInt16() << 8)]);
 		return fakeShort[0];
 	}
-};
+}

@@ -87,9 +87,9 @@ export default class DistortionEffect {
 		this.data[16] = value >> 8;
 	}
 	read(index) {
-		let main = readBlock(0xF708 + index * 17);
+		const main = readBlock(0xF708 + index * 17);
 		for (let i = 0; i < 17; ++i) {
 			this.data[i] = main.readInt16();
 		}
 	}
-};
+}

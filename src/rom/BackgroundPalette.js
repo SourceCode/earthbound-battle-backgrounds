@@ -6,16 +6,16 @@ export default class BackgroundPalette {
 		this.read(index);
 	}
 	read(index) {
-		let pointer = readBlock(0xDAD9 + index * 4);
-		let address = snesToHex(pointer.readInt32());
-		let data = readBlock(address);
+		const pointer = readBlock(0xDAD9 + index * 4);
+		const address = snesToHex(pointer.readInt32());
+		const data = readBlock(address);
 		this.address = address;
 		this.readPalette(data, this.bitsPerPixel, 1);
 	}
 	/**
 	* Gets an array of colors representing one of this palette's subpalettes.
 	*
-	* @param palette 
+	* @param palette
 	* The index of the subpalette to retrieve.
 	*
 	* @return An array containing the colors of the specified subpalette.
@@ -45,18 +45,18 @@ export default class BackgroundPalette {
 			throw new Error("Palette error: Must specify positive number of subpalettes.");
 		}
 		this.colors = new Array(count);
-		let power = 2 ** this.bitsPerPixel;
+		const power = 2 ** this.bitsPerPixel;
 		for (let palette = 0; palette < count; ++palette) {
 			this.colors[palette] = new Array(power);
 			for (let i = 0; i < power; i++) {
-				let clr16 = block.readDoubleShort();
-				let b = ((clr16 >> 10) & 31) * 8;
-				let g = ((clr16 >> 5) & 31) * 8;
-				let r = (clr16 & 31) * 8;
+				const clr16 = block.readDoubleShort();
+				const b = ((clr16 >> 10) & 31) * 8;
+				const g = ((clr16 >> 5) & 31) * 8;
+				const r = (clr16 & 31) * 8;
 				// convert RGB to color int
 				// this code is straight out of Android: http://git.io/F1lZtw
 				this.colors[palette][i] = (0xFF << 24) | (r << 16) | (g << 8) | b;
 			}
 		}
 	}
-};
+}

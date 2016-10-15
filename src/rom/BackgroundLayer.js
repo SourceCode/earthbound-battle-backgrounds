@@ -53,13 +53,13 @@ export default class BackgroundLayer {
 	}
 	loadEntry(index) {
 		this.entry = index;
-		let background = getObject(BattleBackground, index);
+		const background = getObject(BattleBackground, index);
 		/* Set graphics/palette */
 		this.loadGraphics(background.graphicsIndex);
 		this.loadPalette(background);
-		let animation = background.animation;
-		let e1 = (animation >> 24) & 0xFF;
-		let e2 = (animation >> 16) & 0xFF;
+		const animation = background.animation;
+		const e1 = (animation >> 24) & 0xFF;
+		const e2 = (animation >> 16) & 0xFF;
 		this.loadEffect(e2 || e1);
 	}
-};
+}

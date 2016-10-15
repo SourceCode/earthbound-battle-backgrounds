@@ -30,10 +30,10 @@ export default class Distorter {
 	}
 	setOffsetConstants(ticks, amplitude, amplitudeAcceleration, frequency, frequencyAcceleration, compression, compressionAcceleration, speed) {
 		/* Compute "current" values of amplitude, frequency and compression */
-		let t2 = ticks * 2;
+		const t2 = ticks * 2;
 		this.amplitude = this.C1 * (amplitude + amplitudeAcceleration * t2);
-		this.frequency  = this.C2 * (frequency + (frequencyAcceleration * t2));
-		this.compression = 1 + (compression  + (compressionAcceleration * t2)) / 256;
+		this.frequency = this.C2 * (frequency + (frequencyAcceleration * t2));
+		this.compression = 1 + (compression + (compressionAcceleration * t2)) / 256;
 		this.speed = this.C3 * speed * ticks;
 		this.S = y => Math.round(this.amplitude * Math.sin(this.frequency * y + this.speed));
 	}
@@ -56,19 +56,21 @@ export default class Distorter {
 	* 	The distortion offset for the given (y, t) coordinates
 	*/
 	getAppliedOffset(y, distortionEffect) {
+		const s = this.S(y);
 		switch (distortionEffect) {
+			default:
 			case HORIZONTAL:
-				return this.S(y);
+				return s;
 			case HORIZONTAL_INTERLACED:
-				return y % 2 === 0 ? -this.S(y) : this.S(y);
+				return y % 2 === 0 ? -s : s;
 			case VERTICAL:
 				/* Compute L */
-				return mod(Math.floor(this.S(y) + y * this.compression), 256)
+				return mod(Math.floor(s + y * this.compression), 256);
 		}
 	}
 	computeFrame(destinationBitmap, sourceBitmap, distortionEffect, letterbox, ticks, alpha, erase, amplitude, ampliteAcceleration, frequency, frequencyAcceleration, compression, compressionAcceleration, speed) {
-		let newBitmap = destinationBitmap;
-		let oldBitmap = sourceBitmap;
+		const newBitmap = destinationBitmap;
+		const oldBitmap = sourceBitmap;
 		/* TODO: Hardcoing is bad */
 		const dstStride = 1024;
 		const srcStride = 1024;
@@ -94,7 +96,7 @@ export default class Distorter {
 		let x, y, bPos, sPos, dx;
 		this.setOffsetConstants(ticks, amplitude, ampliteAcceleration, frequency, frequencyAcceleration, compression, compressionAcceleration, speed);
 		for (y = 0; y < SNES_HEIGHT; ++y) {
-			let offset = this.getAppliedOffset(y, distortionEffect);
+			const offset = this.getAppliedOffset(y, distortionEffect);
 			let L = y;
 			if (distortionEffect === VERTICAL) {
 				L = offset;
@@ -130,4 +132,4 @@ export default class Distorter {
 		}
 		return newBitmap;
 	}
-};
+}

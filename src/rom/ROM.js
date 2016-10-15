@@ -10,44 +10,46 @@ const REVERSE_BITS = 5;
 const UNKNOWN_1 = 6;
 const UNKNOWN_2 = 7;
 function generateReversedBytes() {
-	let reversedBytes = new Int16Array(256);
+	const reversedBytes = new Int16Array(256);
 	for (let i = 0; i < reversedBytes.length; ++i) {
-		let binary = i.toString(2).padLeft(8, 0);
-		let reversed = [...binary].reverse().join("");
-		let value = Number.parseInt(reversed, 2);
+		const binary = i.toString(2).padLeft(8, 0);
+		const reversed = [...binary].reverse().join("");
+		const value = Number.parseInt(reversed, 2);
 		reversedBytes[i] = value;
 	}
 	return reversedBytes;
 }
 export function snesToHex(address, header = true) {
-	if (address >= 0x400000 && address < 0x600000) {
-		address -= 0x0;
+	let newAddress = address;
+	if (newAddress >= 0x400000 && newAddress < 0x600000) {
+		newAddress -= 0x0;
 	}
-	else if (address >= 0xC00000 && address < 0x1000000) {
-		address -= 0xC00000;
+	else if (newAddress >= 0xC00000 && newAddress < 0x1000000) {
+		newAddress -= 0xC00000;
 	}
 	else {
-		throw new Error(`SNES address out of range: ${address}`);
+		throw new Error(`SNES address out of range: ${newAddress}`);
 	}
 	if (header) {
-		address += 0x200;
+		newAddress += 0x200;
 	}
-	return address - 0xA0200;
-};
+	return newAddress - 0xA0200;
+}
 export function hexToSnes(address, header = true) {
+	let newAddress = address;
 	if (header) {
-		address -= 0x200;
+		newAddress -= 0x200;
 	}
-	if (address >= 0 && address < 0x400000) {
-		return address + 0xC00000;
+	if (newAddress >= 0 && newAddress < 0x400000) {
+		return newAddress + 0xC00000;
 	}
-	else if (address >= 0x400000 && address < 0x600000) {
-		return address;
+	else if (newAddress >= 0x400000 && newAddress < 0x600000) {
+		return newAddress;
 	}
 	else {
-		throw new Error(`File offset out of range: ${address}`);
+		throw new Error(`File offset out of range: ${newAddress}`);
 	}
-};
+}
 /**
 * Adds an object to the ROM container.
 *
@@ -55,7 +57,7 @@ export function hexToSnes(address, header = true) {
 * The ROMObject to add
 */
 export function add(o) {
-	let constructor = o.constructor;
+	const constructor = o.constructor;
 	if (!ROM.objects.has(constructor)) {
 		ROM.objects.set(constructor, []);
 	}
@@ -73,7 +75,6 @@ export function getObject(constructor, i) {
 * The size, in bytes, required for this block
 * @return A writeable block, or null if allocation failed
 */
-
 /**
 * Returns a readable block at the given location. Nominally, should also
 * handle tracking free space depending on the type of read requested.
@@ -89,7 +90,6 @@ export function getObject(constructor, i) {
 export function readBlock(location) {
 	// NOTE: there's no address conversion implemented yet;
 	// we're assuming all addresses are file offsets (with header)
-	
 	// For now, just return a readable block; we'll worry about
 	// typing and free space later
 	return new Block(location);
@@ -119,14 +119,15 @@ export function readBlock(location) {
 * @return The size of the decompressed data if successful, null otherwise
 */
 export function decompress(start, data, output, read) {
-	let maxLength = output.length;
+	const maxLength = output.length;
 	let pos = start;
 	let bpos = 0, bpos2 = 0;
 	let tmp;
+	let newRead = read;
 	while (data[pos] !== 0xFF) {
 		// Data overflow before end of compressed data
 		if (pos >= data.length) {
-			read = pos - start + 1;
+			newRead = pos - start + 1;
 			return null;
 		}
 		let commandType = data[pos] >> 5;
@@ -139,14 +140,14 @@ export function decompress(start, data, output, read) {
 		// Error: block length would overflow maxLength, or block endpos
 		// negative?
 		if (bpos + len > maxLength || bpos + len < 0) {
-			read = pos - start + 1;
+			newRead = pos - start + 1;
 			return null;
 		}
 		++pos;
 		if (commandType >= 4) {
 			bpos2 = (data[pos] << 8) + data[pos + 1];
 			if (bpos2 >= maxLength || bpos2 < 0) {
-				read = pos - start + 1;
+				newRead = pos - start + 1;
 				return null;
 			}
 			pos += 2;
@@ -165,7 +166,7 @@ export function decompress(start, data, output, read) {
 				break;
 			case RUN_LENGTH_ENCODED_SHORT:
 				if (bpos + 2 * len > maxLength || bpos < 0) {
-					read = pos - start + 1;
+					newRead = pos - start + 1;
 					return null;
 				}
 				while (len-- !== 0) {
@@ -182,7 +183,7 @@ export function decompress(start, data, output, read) {
 				break;
 			case REPEAT_PREVIOUS_DATA:
 				if (bpos2 + len > maxLength || bpos2 < 0) {
-					read = pos - start + 1;
+					newRead = pos - start + 1;
 					return null;
 				}
 				for (let i = 0; i < len; ++i) {
@@ -191,7 +192,7 @@ export function decompress(start, data, output, read) {
 				break;
 			case REVERSE_BITS:
 				if (bpos2 + len > maxLength || bpos2 < 0) {
-					read = pos - start + 1;
+					newRead = pos - start + 1;
 					return null;
 				}
 				while (len-- !== 0) {
@@ -200,19 +201,20 @@ export function decompress(start, data, output, read) {
 				break;
 			case UNKNOWN_1:
 				if (bpos2 - len + 1 < 0) {
-					read = pos - start + 1;
+					newRead = pos - start + 1;
 					return null;
 				}
 				while (len-- !== 0) {
 					output[bpos++] = output[bpos2--];
 				}
 				break;
+			default:
 			case UNKNOWN_2:
-				read = pos - start + 1;
+				newRead = pos - start + 1;
 				return null;
 		}
 	}
-	read = pos - start + 1;
+	newRead = pos - start + 1;
 	return output;
 }
 export function getCompressedSize(start, data) {
@@ -230,8 +232,9 @@ export function getCompressedSize(start, data) {
 			length = ((data[pos] & 3) << 8) + (data[pos + 1]) + 1;
 			++pos;
 		}
-		if (bpos + length < 0)
+		if (bpos + length < 0) {
 			return -1;
+		}
 		pos++;
 		if (commandType >= 4) {
 			bpos2 = (data[pos] << 8) + (data[pos + 1]);
@@ -278,9 +281,10 @@ export function getCompressedSize(start, data) {
 				}
 				bpos += length;
 				break;
+			default:
 			case UNKNOWN_2:
 				return -7;
-			}
+		}
 	}
 	return bpos;
 }
@@ -298,4 +302,4 @@ export default class ROM {
 			ROM.cached = true;
 		}
 	}
-};
+}
