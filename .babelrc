@@ -1,4 +1,4 @@
 {
-	"presets": ["latest", "stage-0"],
+	"presets": ["node6", "stage-0", "babili"],
 	"plugins": ["transform-runtime"]
 }

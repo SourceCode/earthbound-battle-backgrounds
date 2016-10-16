@@ -218,8 +218,10 @@ export function decompress(start, data, output, read) {
 	return output;
 }
 export function getCompressedSize(start, data) {
+	/* I use `var` as a workaround, because babili's transform currently binds it to the wrong scope! */
+	var bpos = 0;
 	let pos = start;
-	let bpos = 0, bpos2 = 0;
+	let bpos2 = 0;
 	while (data[pos] !== 0xFF) {
 		/* Data overflow before end of compressed data */
 		if (pos >= data.length) {

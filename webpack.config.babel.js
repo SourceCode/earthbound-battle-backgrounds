@@ -1,5 +1,6 @@
 import webpack from "webpack";
 import path from "path";
+import BabiliPlugin from "babili-webpack-plugin";
 const SOURCE = path.join(__dirname, "src");
 const DESTINATION = path.join(__dirname, "dist");
 const ENV = process.env.NODE_ENV;
@@ -27,9 +28,10 @@ export default {
 	plugins: isDebug ? [] : [
 		new webpack.optimize.DedupePlugin(),
 		new webpack.optimize.OccurrenceOrderPlugin(),
-		new webpack.optimize.UglifyJsPlugin({
-			mangle: false,
-			sourcemap: false
-		})
+		new BabiliPlugin()
+// 		new webpack.optimize.UglifyJsPlugin({
+// 			mangle: false,
+// 			sourcemap: false
+// 		})
 	]
 }
