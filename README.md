@@ -32,7 +32,7 @@ engine.animate();
 ## Project maintenance history
 - In 2008, the code for this project started out on [PK Hack](http://starmen.net/pkhack/) as a [Windows screensaver](https://forum.starmen.net/forum/Fan/Games/Kraken-EB-Battle-Animation-Screensaver/first), written in C# by [Mr. Accident](https://forum.starmen.net/members/168). The source code has been published [here](https://github.com/gjtorikian/kraken).
 - In 2010, [gjtorikian](https://github.com/gjtorikian) ported Mr. Accident's Windows screensaver from C# to [Java](https://github.com/gjtorikian/Earthbound-Battle-Backgrounds) to support Android Live screensavers.
-- In 2013, gjtorikian ported his own project from Java to [ES5 JavaScript](https://github.com/gjtorikian/Earthbound-Battle-Backgrounds-JS) to support all devices with a web browser. He is well aware that his port is terrible (in fact, he even wrote a [dedicated section](https://github.com/gjtorikian/Earthbound-Battle-Backgrounds-JS/blob/gh-pages/README.md#why-is-this-code-so-terrible) in his README.md, just to reflect that).
+- In 2013, gjtorikian ported his own project from Java to [ECMAScript 5](https://github.com/gjtorikian/Earthbound-Battle-Backgrounds-JS) to support all devices with a web browser. He is well aware that his port is terrible (in fact, he even wrote a [dedicated section](https://github.com/gjtorikian/Earthbound-Battle-Backgrounds-JS/blob/gh-pages/README.md#why-is-this-code-so-terrible) in his README.md, just to reflect that).
 - In 2016, [I](https://github.com/kdex) rewrote gjtorikian's port of a port in [ES2015+](https://github.com/kdex/earthbound-battle-backgrounds) for it to stay maintainable.
 
 ## How does this project differ?
