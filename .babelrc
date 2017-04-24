@@ -1,4 +1,12 @@
 {
-	"presets": ["node6", "stage-0", "babili"],
+	"presets": [
+		["env", {
+			"targets": {
+				"browsers": "last 2 versions",
+				"node": "current"
+			}
+		}],
+		"stage-0"
+	],
 	"plugins": ["transform-runtime"]
 }
