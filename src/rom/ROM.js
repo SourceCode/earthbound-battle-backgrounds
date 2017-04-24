@@ -1,4 +1,4 @@
-import "babel-polyfill";
+import padStart from "string.prototype.padstart";
 import BattleBackground from "../rom/BattleBackground";
 import Block from "./Block";
 const UNCOMPRESSED_BLOCK = 0;
@@ -12,7 +12,7 @@ const UNKNOWN_2 = 7;
 function generateReversedBytes() {
 	const reversedBytes = new Int16Array(256);
 	for (let i = 0; i < reversedBytes.length; ++i) {
-		const binary = i.toString(2).padLeft(8, 0);
+		const binary = padStart(i.toString(2), 8, 0);
 		const reversed = [...binary].reverse().join("");
 		const value = Number.parseInt(reversed, 2);
 		reversedBytes[i] = value;

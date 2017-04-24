@@ -21,17 +21,16 @@ export default {
 		rules: [{
 			test: SOURCE,
 			use: "babel-loader",
-			exclude: "node_modules"
+			exclude: /node_modules/
+		}, {
+			test: /\.dat$/,
+			use: "binary-loader",
+			exclude: /node_modules/
 		}]
 	},
 	devtool: isDebug ? "inline-sourcemap" : false,
 	plugins: isDebug ? [] : [
-		new webpack.optimize.DedupePlugin(),
 		new webpack.optimize.OccurrenceOrderPlugin(),
 		new BabiliPlugin()
-// 		new webpack.optimize.UglifyJsPlugin({
-// 			mangle: false,
-// 			sourcemap: false
-// 		})
 	]
 }
