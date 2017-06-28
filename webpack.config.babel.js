@@ -31,6 +31,7 @@ export default {
 	devtool: isDebug ? "inline-sourcemap" : false,
 	plugins: isDebug ? [] : [
 		new webpack.optimize.OccurrenceOrderPlugin(),
+		new webpack.optimize.ModuleConcatenationPlugin(),
 		new BabiliPlugin()
 	]
 }
