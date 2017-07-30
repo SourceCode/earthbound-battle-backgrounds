@@ -10,7 +10,7 @@
     "compile": "webpack",
     "dev": "NODE_ENV=development webpack -d --watch",
     "lint": "eslint src",
-    "prepublish": "npm run compile"
+    "prepublishOnly": "npm run compile"
   },
   "author": "kdex",
   "license": "GPL-3.0",
