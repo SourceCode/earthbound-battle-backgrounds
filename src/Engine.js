@@ -2,20 +2,26 @@ let frameID = -1;
 export const SNES_WIDTH = 256;
 export const SNES_HEIGHT = 224;
 export default class Engine {
+	static computeAlphas(entries) {
+		return entries.map(entry => entry ? 1 / entries.filter(x => x).length : 0);
+	}
 	constructor(layers = [], {
 		fps = 30,
 		aspectRatio = 0,
 		frameSkip = 1,
-		alpha = [0.5, 0.5],
+		alphas = this.constructor.computeAlphas(layers.map(layer => layer.entry)),
 		canvas = document.querySelector("canvas")
 	} = {}) {
 		this.layers = layers;
 		this.fps = fps;
 		this.aspectRatio = aspectRatio;
 		this.frameSkip = frameSkip;
-		this.alpha = alpha;
+		this.alphas = alphas;
 		this.tick = 0;
 		this.canvas = canvas;
+	}
+	rewind() {
+		this.tick = 0;
 	}
 	animate() {
 		let then = Date.now();
@@ -24,14 +30,6 @@ export default class Engine {
 		let bitmap;
 		const canvas = this.canvas;
 		const context = canvas.getContext("2d");
-		if (this.layers[0].entry && !this.layers[1].entry) {
-			this.alpha[0] = 1;
-			this.alpha[1] = 0;
-		}
-		if (!this.layers[0].entry && this.layers[1].entry) {
-			this.alpha[0] = 0;
-			this.alpha[1] = 1;
-		}
 		context.imageSmoothingEnabled = false;
 		canvas.width = SNES_WIDTH;
 		canvas.height = SNES_HEIGHT;
@@ -43,7 +41,7 @@ export default class Engine {
 			if (elapsed > fpsInterval) {
 				then = now - (elapsed % fpsInterval);
 				for (let i = 0; i < this.layers.length; ++i) {
-					bitmap = this.layers[i].overlayFrame(image.data, this.aspectRatio, this.tick, this.alpha[i], i === 0);
+					bitmap = this.layers[i].overlayFrame(image.data, this.aspectRatio, this.tick, this.alphas[i], i === 0);
 				}
 				this.tick += this.frameSkip;
 				image.data.set(bitmap);
