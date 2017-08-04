@@ -28,17 +28,22 @@ engine.animate();
 There are two exports in the package, namely `BackgroundLayer` and `Engine`.
 ### BackgroundLayer
 #### `constructor(entry)`
-Creates a new `BackgroundLayer` displaying `entry`. Note that entry is bounded by `BackgroundLayer.MINIMUM_LAYER` and `BackgroundLayer.MAXIMUM_LAYER`.
+##### Description
+Creates a new `BackgroundLayer` displaying `entry`.
+##### Signature
+- entry: `number`
+
+	The index of the layer to render. It is bounded by `BackgroundLayer.MINIMUM_LAYER` and `BackgroundLayer.MAXIMUM_LAYER`.
 ### Engine
 #### `constructor(layers, options)`
 ##### Description
 Constructs a new `Engine`, which can be used to render `BackgroundLayer`s.
 ##### Signature
 - layers: `Array<BackgroundLayer>` (default: `[]`)
-	
+
 	The array of `BackgroundLayer` instances to render.
 - options: `object`
-	
+
 	An object containing rendering options.
 	- options.fps: `number` (default: `30`)
 
