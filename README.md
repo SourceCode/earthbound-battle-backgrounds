@@ -9,6 +9,8 @@ Yes. You can find a full-screen demo [here](https://kdex.github.io/earthbound-ba
 - Use `[←]` and `[→]` to change layer 1.
 - Use `[↑]` and `[↓]` to change layer 2.
 
+If you edit the URL manually, you can also add/remove layers.
+
 The source code for the demo can be found [here](https://github.com/kdex/kdex.github.io/tree/master/earthbound-battle-backgrounds).
 
 ## Installation
